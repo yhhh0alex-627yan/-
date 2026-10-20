@@ -1353,14 +1353,19 @@
     /* 莲纹交互点与放大镜点 */
     .mural-hotspot-marker {
       position: absolute;
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       transform: translate(-50%, -50%);
       cursor: pointer;
       z-index: 30;
       display: flex;
       align-items: center;
       justify-content: center;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .mural-hotspot-marker * {
+      pointer-events: none;
     }
     .hotspot-dashed-ring {
       position: absolute;
@@ -1374,8 +1379,8 @@
       to { transform: rotate(360deg); }
     }
     .hotspot-core-icon {
-      width: 20px;
-      height: 20px;
+      width: 22px;
+      height: 22px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1393,16 +1398,68 @@
       100% { opacity: 0.95; transform: scale(1.15); filter: drop-shadow(0 0 6px var(--c-gold)); }
     }
 
+    /* 夫人画像常驻特写热点 (h2) */
+    .mural-hotspot-marker.hotspot-wife {
+      width: 56px;
+      height: 56px;
+      z-index: 40;
+    }
+    .mural-hotspot-marker.hotspot-wife .hotspot-dashed-ring {
+      border: 2px dashed #F5E5C9;
+      animation: hotspotSpin 8s linear infinite;
+      box-shadow: 0 0 16px rgba(214, 178, 110, 0.5), inset 0 0 8px rgba(214, 178, 110, 0.3);
+      background: radial-gradient(circle, rgba(166, 58, 43, 0.25) 0%, rgba(214, 178, 110, 0.12) 60%, transparent 100%);
+    }
+    .mural-hotspot-marker.hotspot-wife:hover .hotspot-dashed-ring {
+      border-color: #FFF;
+      box-shadow: 0 0 24px rgba(245, 229, 201, 0.85), inset 0 0 12px rgba(245, 229, 201, 0.6);
+      transform: scale(1.1);
+    }
+    .mural-hotspot-marker.hotspot-wife .hotspot-core-icon {
+      width: 28px;
+      height: 28px;
+      animation: hotspotPulse 1.6s ease-in-out infinite alternate;
+    }
+    .mural-hotspot-marker.hotspot-wife .hotspot-core-icon svg {
+      stroke: #F5E5C9;
+      stroke-width: 2.2;
+      filter: drop-shadow(0 0 8px #D6B26E);
+    }
+    .hotspot-wife-badge {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-top: 4px;
+      padding: 2px 8px;
+      background: rgba(22, 18, 16, 0.92);
+      border: 1px solid var(--c-gold);
+      border-radius: 10px;
+      color: #F5E5C9;
+      font-size: 10.5px;
+      font-family: var(--font-serif);
+      white-space: nowrap;
+      pointer-events: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.85);
+      letter-spacing: 0.1em;
+      transition: all 0.25s ease;
+    }
+    .mural-hotspot-marker.hotspot-wife:hover .hotspot-wife-badge {
+      border-color: #FFF;
+      color: #FFF;
+      box-shadow: 0 0 14px rgba(214, 178, 110, 0.8);
+    }
+
     /* 夫人放大图全屏浮层 */
     #wife-zoom-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(14, 12, 11, 0.92);
+      background: rgba(14, 12, 11, 0.94);
       z-index: 200;
       display: none;
       align-items: center;
       justify-content: center;
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(10px);
     }
     #wife-zoom-overlay.active {
       display: flex;
@@ -1411,32 +1468,97 @@
       position: relative;
       width: min(880px, 92vw);
       height: min(720px, 86vh);
-      border: 6px solid #231B16;
+      border: 4px solid #3A2C22;
       border-radius: 8px;
       overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+      box-shadow: 0 24px 70px rgba(0,0,0,0.96), 0 0 35px rgba(214, 178, 110, 0.35);
       background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .wife-zoom-header {
+      position: absolute;
+      top: 16px;
+      left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      z-index: 30;
+      pointer-events: none;
+    }
+    .wife-zoom-tag {
+      font-family: var(--font-serif);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--c-gold-bright);
+      letter-spacing: 0.2em;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.95), 0 0 12px rgba(214,178,110,0.6);
+    }
+    .wife-zoom-sub {
+      font-size: 11px;
+      color: rgba(229, 218, 202, 0.75);
+      letter-spacing: 0.08em;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+    }
+    .wife-zoom-footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 12px 22px;
+      background: linear-gradient(0deg, rgba(14, 12, 11, 0.96) 0%, rgba(14, 12, 11, 0.75) 60%, transparent 100%);
+      font-size: 12.5px;
+      color: var(--c-silk);
+      line-height: 1.65;
+      pointer-events: none;
+      z-index: 30;
+      font-family: var(--font-serif);
+      letter-spacing: 0.05em;
+      border-top: 1px solid rgba(214, 178, 110, 0.15);
     }
     .wife-zoom-img {
       width: 100%;
       height: 100%;
       object-fit: contain;
+      background: #080605;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+    #wife-hotspots-container {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 25;
+    }
+    #wife-hotspots-container .mural-hotspot-marker {
+      pointer-events: auto;
     }
     .wife-zoom-close {
       position: absolute;
       top: 16px;
-      right: 16px;
-      width: 36px;
-      height: 36px;
+      right: 18px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
-      background: rgba(26, 20, 16, 0.85);
+      background: rgba(26, 20, 16, 0.88);
       border: 1px solid var(--c-gold);
       color: var(--c-silk);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      z-index: 10;
+      z-index: 35;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.8);
+    }
+    .wife-zoom-close:hover {
+      border-color: #FFF;
+      color: #FFF;
+      background: var(--c-gold);
+      transform: scale(1.08);
     }
 
     /* 飞行动画的虚拟莲花 */
@@ -2066,15 +2188,22 @@
         <div class="textbox-content" id="textbox-content">壁画记载了北齐高超的绘画艺术与时代风华。</div>
       </div>
 
-      <!-- 夫人特写全屏弹层（徐显秀墓专享） -->
+      <!-- 夫人特写全屏弹层（徐显秀墓专享，连接 public-xu/xu-1-1.jpg） -->
       <div id="wife-zoom-overlay">
         <div class="wife-zoom-container" id="wife-zoom-container">
           <button class="wife-zoom-close" id="btn-close-wife-zoom" title="关闭特写 (Esc)">
-            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
-          <img class="wife-zoom-img" id="wife-zoom-image" alt="徐显秀夫人画像特写" />
+          <div class="wife-zoom-header">
+            <span class="wife-zoom-tag">徐显秀墓 · 夫人画像特写</span>
+            <span class="wife-zoom-sub">素材: public-xu/xu-1-1.jpg · 细察右臂袖口转生莲纹</span>
+          </div>
+          <img class="wife-zoom-img" id="wife-zoom-image" src="/public-xu/xu-1-1.jpg" alt="徐显秀夫人画像特写" />
           <!-- 夫人袖口热点容器 -->
           <div id="wife-hotspots-container"></div>
+          <div class="wife-zoom-footer">
+            <span>夫人头挽高髻，佩金步摇，身着绛红大袖礼袍，执杯宴饮。右臂白地袖口上织绣精美之转生莲花纹样（点击袖口金莲即可收集转生之莲）。</span>
+          </div>
         </div>
       </div>
 
@@ -2345,7 +2474,7 @@
             "/public-xu/xu-2.jpg", // 东壁：牛车出行与侍女图
             "/public-xu/xu-3.jpg"  // 西壁：备马鞍马骑行图
           ], 
-          wifeZoom: "" 
+          wifeZoom: "/public-xu/xu-1-1.jpg" 
         },
         jiuyuan: { 
           name: "九原岗墓", 
@@ -2374,6 +2503,7 @@
       "branches.xuxiu.walls.0": { name: "xu-1.jpg", size: "2.14 MB" },
       "branches.xuxiu.walls.1": { name: "xu-2.jpg", size: "415 KB" },
       "branches.xuxiu.walls.2": { name: "xu-3.jpg", size: "670 KB" },
+      "branches.xuxiu.wifeZoom": { name: "xu-1-1.jpg", size: "1.09 MB" },
       "branches.jiuyuan.walls.0": { name: "jiu-1.jpg", size: "505 KB" },
       "branches.jiuyuan.walls.1": { name: "jiu-2.jpg", size: "7.51 MB" },
       "branches.jiuyuan.walls.2": { name: "jiu-3.jpg", size: "994 KB" },
@@ -2386,11 +2516,11 @@
     const CONFIG = {
       hotspots: [
         { id: "h1", page: "xuxiu.walls.0",   label: "莲纹（宴饮图背景）", x: 18, y: 34 },
-        { id: "h2", page: "xuxiu.walls.0",   label: "夫人放大点",         x: 46, y: 62 },
-        { id: "h3", page: "xuxiu.wifeZoom",  label: "莲纹（夫人袖口）",   x: 62, y: 74 },
+        { id: "h2", page: "xuxiu.walls.0",   label: "夫人画像特写 (常驻)", x: 44, y: 64, permanent: true },
+        { id: "h3", page: "xuxiu.wifeZoom",  label: "莲纹（夫人袖口）",   x: 27, y: 78 },
         { id: "h4", page: "jiuyuan.walls.0", label: "莲纹（门楼正上方）", x: 50, y: 12 },
         { id: "h5", page: "lourui.walls.0",  label: "莲纹（神鸟衔莲）",   x: 16, y: 14 },
-        { id: "h6", page: "xuxiu.walls.0",   label: "神鸟落点（夫人袖口）", x: 52, y: 70 }
+        { id: "h6", page: "xuxiu.walls.0",   label: "神鸟落点（夫人袖口）", x: 44, y: 70 }
       ],
       storageKey: "beiqifresco_museum_v1"
     };
@@ -2782,7 +2912,7 @@
         case "branches.xuxiu.walls.2":
           return generateFrescoFallback("徐显秀墓 · 备马鞍马骑行图", "备鞍列仗 · 鲜卑武臣英姿", "xuxiu-1");
         case "branches.xuxiu.wifeZoom":
-          return generateFrescoFallback("徐显秀墓 · 夫人画像特写", "高髻步摇 · 袖口转生莲纹", "xuxiu-wife");
+          return "/public-xu/xu-1-1.jpg";
         case "branches.jiuyuan.walls.0":
           return generateFrescoFallback("九原岗墓 · 升仙双柱门楼图", "古代最高等级木构壁画 · 倒悬宝莲", "jiuyuan-0");
         case "branches.jiuyuan.walls.1":
@@ -2965,7 +3095,8 @@
             }
           }
           if (Array.isArray(parsed.lotusCollected)) {
-            state.lotusCollected = parsed.lotusCollected;
+            // 确保 h2（常驻特写）与 h6（归墓落点）不混入莲花槽位
+            state.lotusCollected = parsed.lotusCollected.filter(id => id !== "h2" && id !== "h6");
           }
           if (Array.isArray(parsed.visitedBranches)) {
             state.visitedBranches = parsed.visitedBranches;
@@ -2993,7 +3124,7 @@
       try {
         const payload = {
           chapter: state.chapter,
-          lotusCollected: state.lotusCollected,
+          lotusCollected: state.lotusCollected.filter(id => id !== "h2" && id !== "h6"),
           visitedBranches: state.visitedBranches,
           soundOn: state.soundOn,
           hotspots: CONFIG.hotspots
@@ -3511,6 +3642,7 @@
        各章实现：【第三章 branch · 三条支线】
        ========================================================================== */
     function mountBranchChapter() {
+      state.isWifeZoom = false; // 进入支线时重置特写状态
       const tomb = state.currentTomb; // xuxiu | jiuyuan | lourui
       const wrap = document.getElementById("branch-cylinder-wrap");
 
@@ -3576,9 +3708,14 @@
       };
 
       // 夫人特写关闭
-      document.getElementById("btn-close-wife-zoom").onclick = () => {
-        closeWifeZoom();
-      };
+      const closeWifeBtn = document.getElementById("btn-close-wife-zoom");
+      if (closeWifeBtn) closeWifeBtn.onclick = closeWifeZoom;
+      const zoomOverlayEl = document.getElementById("wife-zoom-overlay");
+      if (zoomOverlayEl) {
+        zoomOverlayEl.onclick = (e) => {
+          if (e.target === zoomOverlayEl) closeWifeZoom();
+        };
+      }
 
       // 更新旋转角度、文字与热点
       updateBranchCylinderView();
@@ -3642,40 +3779,64 @@
         if (!targetLayer) continue;
 
         activeHotspots.forEach(h => {
-          if (state.lotusCollected.includes(h.id)) return;
+          // h2 为徐显秀墓夫人的常驻特写热点，永不因收集莲花而消失！
+          if (h.id !== "h2" && state.lotusCollected.includes(h.id)) return;
 
           const marker = document.createElement("div");
-          marker.className = "mural-hotspot-marker";
           marker.style.left = h.x + "%";
           marker.style.top = h.y + "%";
           marker.setAttribute("title", h.label);
 
           if (h.id === "h2") {
-            // 夫人放大镜图标
+            // 夫人画像常驻特写放大热点（金色醒目圆环 + 放大镜 + 徽标标签）
+            marker.className = "mural-hotspot-marker hotspot-wife";
+            marker.setAttribute("role", "button");
+            marker.setAttribute("aria-label", "查看夫人画像特写 (常驻)");
             marker.innerHTML = `
               <div class="hotspot-dashed-ring"></div>
               <div class="hotspot-core-icon">
-                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="#D6B26E" stroke-width="2"/><line x1="16.5" y1="16.5" x2="22" y2="22" stroke="#D6B26E" stroke-width="2.5"/></svg>
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2.2"/><line x1="16.5" y1="16.5" x2="22" y2="22" stroke="currentColor" stroke-width="2.5"/></svg>
               </div>
+              <div class="hotspot-wife-badge">夫人特写</div>
             `;
-            marker.onclick = (e) => {
-              e.stopPropagation();
+            let isTriggering = false;
+            const triggerWifeZoom = (e) => {
+              if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+              }
+              if (isTriggering) return;
+              isTriggering = true;
+              setTimeout(() => { isTriggering = false; }, 350);
               if (state.isEditingHotspots) return;
+              initAudio();
+              playLotusChime();
               openWifeZoom();
             };
+            marker.onclick = triggerWifeZoom;
+            marker.onpointerdown = triggerWifeZoom;
           } else {
             // 莲花热点
+            marker.className = "mural-hotspot-marker";
             marker.innerHTML = `
               <div class="hotspot-dashed-ring"></div>
               <div class="hotspot-core-icon">
                 <svg viewBox="0 0 24 24"><path d="M12 2C12 2 8 8 8 13C8 16.5 10 19 12 21C14 19 16 16.5 16 13C16 8 12 2 12 2Z"/></svg>
               </div>
             `;
-            marker.onclick = (e) => {
-              e.stopPropagation();
+            let isCollecting = false;
+            const triggerCollect = (e) => {
+              if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+              }
+              if (isCollecting) return;
+              isCollecting = true;
               if (state.isEditingHotspots) return;
               collectLotus(h, marker);
             };
+            marker.onclick = triggerCollect;
+            marker.onpointerdown = triggerCollect;
           }
           targetLayer.appendChild(marker);
         });
@@ -3691,11 +3852,12 @@
           img.onerror = null;
           img.src = generateFrescoFallback("徐显秀墓 · 夫人画像特写", "高髻步摇 · 袖口转生莲纹", "xuxiu-wife");
         };
-        img.src = getAssetUrl("branches.xuxiu.wifeZoom");
+        const targetSrc = getAssetUrl("branches.xuxiu.wifeZoom") || "/public-xu/xu-1-1.jpg";
+        img.src = targetSrc;
       }
       overlay.classList.add("active");
 
-      // 渲染夫人袖口莲花热点 h3
+      // 渲染夫人袖口莲花热点 h3 (精准落在袖口白底转生莲花纹上)
       const container = document.getElementById("wife-hotspots-container");
       container.innerHTML = "";
       const h3 = CONFIG.hotspots.find(h => h.id === "h3");
@@ -3711,11 +3873,19 @@
             <svg viewBox="0 0 24 24"><path d="M12 2C12 2 8 8 8 13C8 16.5 10 19 12 21C14 19 16 16.5 16 13C16 8 12 2 12 2Z"/></svg>
           </div>
         `;
-        marker.onclick = (e) => {
-          e.stopPropagation();
+        let isCollecting = false;
+        const triggerCollect = (e) => {
+          if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+          if (isCollecting) return;
+          isCollecting = true;
           if (state.isEditingHotspots) return;
           collectLotus(h3, marker);
         };
+        marker.onclick = triggerCollect;
+        marker.onpointerdown = triggerCollect;
         container.appendChild(marker);
       }
     }
@@ -4611,16 +4781,17 @@
       }, 2400);
     }
 
-    // 调试辅助：快速集齐四莲
+    // 调试辅助：快速集齐四莲（仅收集 h1, h3, h4, h5，保留 h2 常驻特写）
     function debugCollectAllLotuses() {
-      CONFIG.hotspots.forEach(h => {
-        if (!state.lotusCollected.includes(h.id)) {
-          state.lotusCollected.push(h.id);
+      const lotusIds = ["h1", "h3", "h4", "h5"];
+      lotusIds.forEach(id => {
+        if (!state.lotusCollected.includes(id)) {
+          state.lotusCollected.push(id);
         }
       });
       updateLotusHUD();
       saveCurrentState();
-      showToast("已调式集齐全部转生之莲");
+      showToast("已调试集齐四朵转生之莲");
     }
 
     /* ==========================================================================
