@@ -847,30 +847,44 @@
        - 九原岗墓（右前八面体切面）：rotateY(-36deg) 呈八面体右壁切角
     */
     #door-xuxiu {
-      transform: translate(-50%, -50%) translateZ(-40px) rotateY(0deg);
+      transform: translate(-50%, -50%) translateZ(-20px) rotateY(0deg);
     }
     #door-lourui {
-      transform: translate(-50%, -50%) translateX(min(-400px, -26vw)) translateZ(-160px) rotateY(36deg);
+      transform: translate(-50%, -50%) translateX(min(-370px, -24vw)) translateZ(-70px) rotateY(16deg);
     }
     #door-jiuyuan {
-      transform: translate(-50%, -50%) translateX(max(400px, 26vw)) translateZ(-160px) rotateY(-36deg);
+      transform: translate(-50%, -50%) translateX(max(370px, 24vw)) translateZ(-70px) rotateY(-16deg);
     }
 
-    /* 悬停时：门体沿其八面体切面法向挺拔浮起并散发金光 */
+    /* 悬停时：门体沿切面法向挺拔浮起并散发金光 */
     #door-xuxiu:hover {
-      transform: translate(-50%, -50%) translateZ(-10px) rotateY(0deg) scale(1.02);
+      transform: translate(-50%, -50%) translateZ(10px) rotateY(0deg) scale(1.02);
       filter: drop-shadow(0 20px 48px rgba(214, 178, 110, 0.45));
     }
     #door-lourui:hover {
-      transform: translate(-50%, -50%) translateX(min(-400px, -26vw)) translateZ(-130px) rotateY(33deg) scale(1.02);
+      transform: translate(-50%, -50%) translateX(min(-370px, -24vw)) translateZ(-40px) rotateY(13deg) scale(1.02);
       filter: drop-shadow(0 20px 48px rgba(214, 178, 110, 0.45));
     }
     #door-jiuyuan:hover {
-      transform: translate(-50%, -50%) translateX(max(400px, 26vw)) translateZ(-130px) rotateY(-33deg) scale(1.02);
+      transform: translate(-50%, -50%) translateX(max(370px, 24vw)) translateZ(-40px) rotateY(-13deg) scale(1.02);
       filter: drop-shadow(0 20px 48px rgba(214, 178, 110, 0.45));
     }
     .tomb-door-wrap:active {
       transform: scale(0.99);
+    }
+
+    /* 选定开门时的摄像机聚焦与透视修正：平滑拉正到正中心正对视角，彻底消除左右歪斜畸变 */
+    .tomb-door-wrap.door-opening-focus {
+      transform: translate(-50%, -50%) translateZ(140px) rotateY(0deg) scale(1.14) !important;
+      z-index: 50 !important;
+      transition: transform 1.1s cubic-bezier(0.22, 1, 0.36, 1), filter 1s ease !important;
+      filter: drop-shadow(0 25px 60px rgba(245, 229, 201, 0.65)) !important;
+    }
+    .tomb-door-wrap.door-fading-out {
+      opacity: 0.12 !important;
+      filter: blur(6px) brightness(0.25) !important;
+      pointer-events: none !important;
+      transition: opacity 0.8s ease, filter 0.8s ease !important;
     }
 
     /* 上方横置匾额（经典黑漆金框横匾） */
@@ -1018,7 +1032,7 @@
       width: 50%;
       background: linear-gradient(180deg, #2E231C 0%, #1C1511 50%, #100C09 100%);
       z-index: 3;
-      transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform 1.05s cubic-bezier(0.22, 1, 0.36, 1);
       box-shadow: inset 0 0 20px rgba(0,0,0,0.85);
       pointer-events: none;
       overflow: hidden;
@@ -1036,18 +1050,18 @@
 
     /* 悬停时门扉微微轻启，透出内部光华 */
     .tomb-door-wrap:hover .left-leaf {
-      transform: rotateY(-16deg);
+      transform: rotateY(-14deg);
     }
     .tomb-door-wrap:hover .right-leaf {
-      transform: rotateY(16deg);
+      transform: rotateY(14deg);
     }
 
-    /* 点击开启时门扉大开 */
+    /* 点击开启时门扉大开，角度自然大气 */
     .door-open .left-leaf {
-      transform: rotateY(-82deg) !important;
+      transform: rotateY(-74deg) !important;
     }
     .door-open .right-leaf {
-      transform: rotateY(82deg) !important;
+      transform: rotateY(74deg) !important;
     }
 
     /* 鎏金铜乳钉（立体金属高光与阴影） */
@@ -1106,15 +1120,17 @@
     .door-beam {
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at center, rgba(255,245,225,0.95) 0%, rgba(214,178,110,0.85) 50%, transparent 100%);
-      transform: scaleY(0);
+      background: radial-gradient(circle at center, rgba(255,248,230,0.95) 0%, rgba(214,178,110,0.8) 45%, transparent 75%);
+      opacity: 0;
+      transform: scale(0.6);
       transform-origin: center center;
-      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: opacity 0.8s ease, transform 1s cubic-bezier(0.2, 0.9, 0.3, 1);
       z-index: 2;
       pointer-events: none;
     }
     .door-open .door-beam {
-      transform: scale(1.2) !important;
+      opacity: 1 !important;
+      transform: scale(1.4) !important;
     }
 
     /* 第三章 branch 支线环形壁画 */
@@ -1127,11 +1143,9 @@
     }
     #branch-cylinder-wrap {
       position: relative;
-      width: clamp(720px, 68vw, 1060px);
-      height: clamp(460px, 62vh, 660px);
-      transform-style: preserve-3d;
-      transition: transform 0.85s cubic-bezier(0.25, 1, 0.4, 1);
-      --r: clamp(280px, 26vw, 380px);
+      width: clamp(740px, 70vw, 1080px);
+      height: clamp(480px, 64vh, 680px);
+      perspective: 1600px;
       z-index: 10;
     }
     .cylinder-panel {
@@ -1139,8 +1153,6 @@
       inset: 0;
       width: 100%;
       height: 100%;
-      transform-style: preserve-3d;
-      backface-visibility: hidden;
       border: 8px solid #281F19;
       border-radius: 8px;
       background: #0E0C0B;
@@ -1149,35 +1161,49 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      transition: filter 0.6s ease, opacity 0.6s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+      transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1), 
+                  filter 0.5s ease, 
+                  opacity 0.5s ease, 
+                  border-color 0.4s ease, 
+                  box-shadow 0.4s ease;
+      will-change: transform, opacity;
     }
-    #panel-0 {
-      transform: rotateY(0deg) translateZ(var(--r));
-    }
-    #panel-1 {
-      transform: rotateY(120deg) translateZ(var(--r));
-    }
-    #panel-2 {
-      transform: rotateY(240deg) translateZ(var(--r));
-    }
-    .cylinder-panel.panel-active {
-      filter: brightness(1) saturate(1.05);
+    .cylinder-panel.panel-pos-center {
+      transform: translate3d(0, 0, 0) scale(1) rotateY(0deg);
       opacity: 1;
+      filter: brightness(1) saturate(1.05);
       border-color: #5C4537;
       box-shadow: 0 32px 85px rgba(0,0,0,0.96), 0 0 40px rgba(214, 178, 110, 0.22);
       z-index: 10;
       cursor: default;
     }
-    .cylinder-panel:not(.panel-active) {
-      filter: brightness(0.32) saturate(0.8);
-      opacity: 0.62;
-      z-index: 2;
+    .cylinder-panel.panel-pos-left {
+      transform: translate3d(-52%, 0, -160px) rotateY(30deg) scale(0.86);
+      opacity: 0.52;
+      filter: brightness(0.4) saturate(0.8);
+      border-color: #281F19;
+      z-index: 4;
       cursor: pointer;
     }
-    .cylinder-panel:not(.panel-active):hover {
-      filter: brightness(0.55) saturate(0.95);
+    .cylinder-panel.panel-pos-left:hover {
       opacity: 0.85;
-      border-color: rgba(214, 178, 110, 0.4);
+      filter: brightness(0.7) saturate(0.95);
+      border-color: rgba(214, 178, 110, 0.5);
+      transform: translate3d(-50%, 0, -120px) rotateY(24deg) scale(0.89);
+    }
+    .cylinder-panel.panel-pos-right {
+      transform: translate3d(52%, 0, -160px) rotateY(-30deg) scale(0.86);
+      opacity: 0.52;
+      filter: brightness(0.4) saturate(0.8);
+      border-color: #281F19;
+      z-index: 4;
+      cursor: pointer;
+    }
+    .cylinder-panel.panel-pos-right:hover {
+      opacity: 0.85;
+      filter: brightness(0.7) saturate(0.95);
+      border-color: rgba(214, 178, 110, 0.5);
+      transform: translate3d(50%, 0, -120px) rotateY(-24deg) scale(0.89);
     }
     .cylinder-panel::after {
       content: "";
@@ -1453,12 +1479,12 @@
       text-align: center;
     }
     .converge-phase-img {
-      width: clamp(440px, 48vw, 760px);
-      max-height: clamp(440px, 62vh, 700px);
+      width: clamp(560px, 64vw, 1020px);
+      max-height: clamp(500px, 72vh, 840px);
       object-fit: contain;
-      filter: drop-shadow(0 0 50px rgba(214, 178, 110, 0.65)) drop-shadow(0 0 100px rgba(184, 75, 41, 0.35));
-      mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 50%, rgba(0,0,0,0.85) 72%, transparent 100%);
-      -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 50%, rgba(0,0,0,0.85) 72%, transparent 100%);
+      filter: drop-shadow(0 0 55px rgba(214, 178, 110, 0.75)) drop-shadow(0 0 120px rgba(184, 75, 41, 0.4));
+      mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 58%, rgba(0,0,0,0.85) 78%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 58%, rgba(0,0,0,0.85) 78%, transparent 100%);
       transition: all 1s ease;
     }
     .converge-monologue-line {
@@ -1496,12 +1522,12 @@
       z-index: 15;
     }
     .return-bird-img {
-      width: clamp(440px, 45vw, 740px);
-      max-height: clamp(420px, 60vh, 680px);
+      width: clamp(560px, 60vw, 980px);
+      max-height: clamp(480px, 68vh, 800px);
       object-fit: contain;
-      filter: drop-shadow(0 0 50px rgba(214, 178, 110, 0.7)) drop-shadow(0 0 110px rgba(245, 229, 201, 0.4));
-      mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 52%, rgba(0,0,0,0.85) 74%, transparent 100%);
-      -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 52%, rgba(0,0,0,0.85) 74%, transparent 100%);
+      filter: drop-shadow(0 0 55px rgba(214, 178, 110, 0.75)) drop-shadow(0 0 120px rgba(245, 229, 201, 0.45));
+      mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 56%, rgba(0,0,0,0.85) 78%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 56%, rgba(0,0,0,0.85) 78%, transparent 100%);
       transform-origin: bottom right;
       transition: all 1.2s ease;
     }
@@ -1632,12 +1658,12 @@
       transition: opacity 1.2s ease;
     }
     .end-group-img {
-      width: clamp(520px, 58vw, 920px);
-      max-height: clamp(480px, 62vh, 740px);
+      width: clamp(660px, 72vw, 1180px);
+      max-height: clamp(520px, 72vh, 860px);
       object-fit: contain;
-      filter: drop-shadow(0 0 60px rgba(214, 178, 110, 0.65)) drop-shadow(0 0 120px rgba(184, 75, 41, 0.35));
-      mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 56%, rgba(0,0,0,0.88) 76%, transparent 100%);
-      -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 56%, rgba(0,0,0,0.88) 76%, transparent 100%);
+      filter: drop-shadow(0 0 70px rgba(214, 178, 110, 0.75)) drop-shadow(0 0 140px rgba(184, 75, 41, 0.45));
+      mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 62%, rgba(0,0,0,0.88) 80%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 62%, rgba(0,0,0,0.88) 80%, transparent 100%);
     }
     .end-ip-caption {
       font-family: var(--font-serif);
@@ -2191,11 +2217,11 @@
             <div class="slot-desc">拖入图片或点击选择</div>
           </div>
           <div class="slot-card" data-slot="branches.xuxiu.walls.1" data-type="image">
-            <div class="slot-title">西壁：备马鞍马骑行图 (walls[1])</div>
+            <div class="slot-title">东壁：牛车出行与侍女图 (walls[1])</div>
             <div class="slot-desc">拖入图片或点击选择</div>
           </div>
           <div class="slot-card" data-slot="branches.xuxiu.walls.2" data-type="image">
-            <div class="slot-title">东壁：牛车出行与侍女图 (walls[2])</div>
+            <div class="slot-title">西壁：备马鞍马骑行图 (walls[2])</div>
             <div class="slot-desc">拖入图片或点击选择</div>
           </div>
           <div class="slot-card" data-slot="branches.xuxiu.wifeZoom" data-type="image">
@@ -2213,15 +2239,15 @@
         </div>
         <div class="slot-group-content">
           <div class="slot-card" data-slot="branches.jiuyuan.walls.0" data-type="image">
-            <div class="slot-title">北壁：升仙与双柱门楼图 (walls[0])</div>
+            <div class="slot-title">北壁：升仙双柱门楼图 (walls[0])</div>
             <div class="slot-desc">拖入图片或点击选择</div>
           </div>
           <div class="slot-card" data-slot="branches.jiuyuan.walls.1" data-type="image">
-            <div class="slot-title">东壁：大型狩猎图 (walls[1])</div>
+            <div class="slot-title">东西壁：大型狩猎长卷 (walls[1])</div>
             <div class="slot-desc">拖入图片或点击选择</div>
           </div>
           <div class="slot-card" data-slot="branches.jiuyuan.walls.2" data-type="image">
-            <div class="slot-title">西壁：雷公风伯升仙天象 (walls[2])</div>
+            <div class="slot-title">上层：雷公风伯升仙天象 (walls[2])</div>
             <div class="slot-desc">拖入图片或点击选择</div>
           </div>
         </div>
@@ -2312,9 +2338,31 @@
       introImage: "",          // 引入页底图（图片）
       filmVideo: "",           // 第一章影片（视频，可空）
       branches: {
-        xuxiu:   { name: "徐显秀墓", walls: ["", "", ""], wifeZoom: "" },
-        jiuyuan: { name: "九原岗墓", walls: ["", "", ""] },
-        lourui:  { name: "娄睿墓",   walls: ["", "", ""] }
+        xuxiu:   { 
+          name: "徐显秀墓", 
+          walls: [
+            "/public-xu/xu-1.jpg", // 正壁：夫妇宴饮图
+            "/public-xu/xu-2.jpg", // 东壁：牛车出行与侍女图
+            "/public-xu/xu-3.jpg"  // 西壁：备马鞍马骑行图
+          ], 
+          wifeZoom: "" 
+        },
+        jiuyuan: { 
+          name: "九原岗墓", 
+          walls: [
+            "/public-jiu/jiu-1.jpg", 
+            "/public-jiu/jiu-2.jpg", 
+            "/public-jiu/jiu-3.jpg"
+          ] 
+        },
+        lourui:  { 
+          name: "娄睿墓",   
+          walls: [
+            "/public-lou/lou-3.jpg", // 墓门：神鸟衔莲与天象 (lou-3.jpg)
+            "/public-lou/lou-1.jpg", // 墓道：鞍马游骑图 (lou-1.jpg)
+            "/public-lou/lou-2.jpg"  // 主室：出行仪仗图 (lou-2.jpg)
+          ] 
+        }
       },
       lotus: { one: "", two: "", three: "" },   // 莲相 / 人相 / 鸟相
       lotusGroup: "",          // 三生莲组合图
@@ -2322,7 +2370,17 @@
     };
 
     // 已导入的文件元信息（用于抽屉回显）
-    const ASSETS_META = {};
+    const ASSETS_META = {
+      "branches.xuxiu.walls.0": { name: "xu-1.jpg", size: "2.14 MB" },
+      "branches.xuxiu.walls.1": { name: "xu-2.jpg", size: "415 KB" },
+      "branches.xuxiu.walls.2": { name: "xu-3.jpg", size: "670 KB" },
+      "branches.jiuyuan.walls.0": { name: "jiu-1.jpg", size: "505 KB" },
+      "branches.jiuyuan.walls.1": { name: "jiu-2.jpg", size: "7.51 MB" },
+      "branches.jiuyuan.walls.2": { name: "jiu-3.jpg", size: "994 KB" },
+      "branches.lourui.walls.0": { name: "lou-3.jpg", size: "510 KB" },
+      "branches.lourui.walls.1": { name: "lou-1.jpg", size: "3.35 MB" },
+      "branches.lourui.walls.2": { name: "lou-2.jpg", size: "12.5 MB" }
+    };
 
     // 默认热点标定配置（可通过可视化热点编辑工具实时拖拽修改并持久化）
     const CONFIG = {
@@ -2344,12 +2402,12 @@
         text: "正壁绘徐显秀夫妇并坐于华盖重幔之下，太尉面蓄美髯，披玄色大裘；夫人头挽高髻，佩步摇金簪，侍从执壶乐伎奏乐。线条沉雄凝练，生动再现了北齐高层胡汉通融的贵族起居风貌。"
       },
       "xuxiu.1": {
-        title: "徐显秀墓 · 备马鞍马骑行图",
-        text: "墓道西壁描摹骑马仪仗，骏马分梳三花，备鞍具连珠饰杏花金装；武士头戴鲜卑垂裙帽，佩剑执幡，顾盼生姿。笔力劲拔苍劲，铁线勾勒洗练精准，具极高军事与服饰考证价值。"
-      },
-      "xuxiu.2": {
         title: "徐显秀墓 · 牛车出行与侍女图",
         text: "墓道东壁绘夫人乘卷棚高顶青牛车出行的庄严序列。青牛骨骼健硕，两侧侍女着窄袖襦裙，体态端庄，再现了北齐并州与邺城上层女子流行之车舆礼制。"
+      },
+      "xuxiu.2": {
+        title: "徐显秀墓 · 备马鞍马骑行图",
+        text: "墓道西壁描摹骑马仪仗，骏马分梳三花，备鞍具连珠饰杏花金装；武士头戴鲜卑垂裙帽，佩剑执幡，顾盼生姿。笔力劲拔苍劲，铁线勾勒洗练精准，具极高军事与服饰考证价值。"
       },
       "jiuyuan.0": {
         title: "九原岗墓 · 升仙双柱门楼图",
@@ -2720,9 +2778,9 @@
         case "branches.xuxiu.walls.0":
           return generateFrescoFallback("徐显秀墓 · 夫妇宴饮图", "北齐太尉武安王宴坐极乐", "xuxiu-0");
         case "branches.xuxiu.walls.1":
-          return generateFrescoFallback("徐显秀墓 · 备马鞍马骑行图", "备鞍列仗 · 鲜卑武臣英姿", "xuxiu-1");
-        case "branches.xuxiu.walls.2":
           return generateFrescoFallback("徐显秀墓 · 牛车出行图", "卷棚青牛 · 侍女仪卫肃穆", "xuxiu-2");
+        case "branches.xuxiu.walls.2":
+          return generateFrescoFallback("徐显秀墓 · 备马鞍马骑行图", "备鞍列仗 · 鲜卑武臣英姿", "xuxiu-1");
         case "branches.xuxiu.wifeZoom":
           return generateFrescoFallback("徐显秀墓 · 夫人画像特写", "高髻步摇 · 袖口转生莲纹", "xuxiu-wife");
         case "branches.jiuyuan.walls.0":
@@ -2769,8 +2827,9 @@
       let curr = obj;
       for (let i = 0; i < parts.length - 1; i++) {
         const p = parts[i];
+        const nextP = parts[i + 1];
         if (!curr[p] || typeof curr[p] !== "object") {
-          curr[p] = {};
+          curr[p] = !isNaN(Number(nextP)) ? [] : {};
         }
         curr = curr[p];
       }
@@ -3381,7 +3440,7 @@
       let isTransitioning = false;
 
       doors.forEach(doorEl => {
-        doorEl.classList.remove("door-open");
+        doorEl.classList.remove("door-opening-focus", "door-open", "door-fading-out");
 
         doorEl.onmouseenter = () => {
           if (!isTransitioning) {
@@ -3400,19 +3459,23 @@
           const tombKey = doorEl.getAttribute("data-tomb");
           playKnockerSound();
 
-          // 门扉大开
-          doorEl.classList.add("door-open");
+          // 选定门扇平滑居中聚焦并开门，其他门扇渐隐淡出
+          doors.forEach(d => {
+            if (d === doorEl) {
+              d.classList.add("door-opening-focus", "door-open");
+            } else {
+              d.classList.add("door-fading-out");
+            }
+          });
 
-          // 视线向所选正八面体切面大门全景推进
+          // 视线平滑推进，整体视角始终平稳正对，彻底消除左右歪斜畸变
           if (state.rafId) {
             cancelAnimationFrame(state.rafId);
             state.rafId = null;
           }
-          scene.style.transition = "transform 1.1s cubic-bezier(0.2, 0.9, 0.3, 1), filter 1.1s ease";
-          const targetRotY = tombKey === "lourui" ? -36 : tombKey === "jiuyuan" ? 36 : 0;
-          const targetTransX = tombKey === "lourui" ? 380 : tombKey === "jiuyuan" ? -380 : 0;
-          scene.style.transform = `translateZ(340px) translateX(${targetTransX}px) rotateY(${targetRotY}deg)`;
-          scene.style.filter = "brightness(0.3) blur(2px)";
+          scene.style.transition = "transform 1.1s cubic-bezier(0.22, 1, 0.36, 1), filter 1.1s ease";
+          scene.style.transform = "translateZ(160px) rotateY(0deg)";
+          scene.style.filter = "brightness(0.65)";
 
           let finished = false;
           function doEnter() {
@@ -3421,7 +3484,9 @@
             scene.style.filter = "none";
             scene.style.transition = "";
             scene.style.transform = "none";
-            doorEl.classList.remove("door-open");
+            doors.forEach(d => {
+              d.classList.remove("door-opening-focus", "door-open", "door-fading-out");
+            });
             isTransitioning = false;
             hallLayer.onclick = null;
             gotoChapter("branch", tombKey);
@@ -3453,14 +3518,15 @@
       for (let i = 0; i < 3; i++) {
         const imgEl = document.getElementById("branch-img-" + i);
         if (imgEl) {
-          imgEl.src = getAssetUrl(`branches.${tomb}.walls.${i}`);
           imgEl.onerror = () => {
+            imgEl.onerror = null;
             imgEl.src = generateFrescoFallback(
               FRESCO_DESCRIPTIONS[`${tomb}.${i}`]?.title || "北齐壁画",
               "壁画原貌摹绘",
               `${tomb}-${i}`
             );
           };
+          imgEl.src = getAssetUrl(`branches.${tomb}.walls.${i}`);
         }
 
         // 点击背景展墙直接平滑切换到该壁画
@@ -3478,7 +3544,7 @@
 
       // 三面壁画导航标签文案与切换
       const wallTitles = {
-        xuxiu: ["正壁 · 夫妇宴饮", "西壁 · 备马游骑", "东壁 · 牛车出行"],
+        xuxiu: ["正壁 · 夫妇宴饮", "东壁 · 牛车出行", "西壁 · 备马游骑"],
         jiuyuan: ["北壁 · 双柱门楼", "东西 · 狩猎长卷", "上层 · 升仙天象"],
         lourui: ["墓门 · 神鸟衔莲", "墓道 · 鞍马游骑", "主室 · 出行仪仗"]
       };
@@ -3519,23 +3585,26 @@
     }
 
     function updateBranchCylinderView() {
-      const wrap = document.getElementById("branch-cylinder-wrap");
-      const angle = -state.currentWallIndex * 120;
-      wrap.style.transform = `translateZ(calc(-1 * var(--r, 300px))) rotateY(${angle}deg)`;
+      const curIdx = state.currentWallIndex;
+      const leftIdx = (curIdx + 2) % 3;
+      const rightIdx = (curIdx + 1) % 3;
 
-      // 更新展墙激活状态与层级
+      // 更新三面展墙 3D 环形全景排布
       for (let i = 0; i < 3; i++) {
         const panel = document.getElementById("panel-" + i);
         if (panel) {
-          if (i === state.currentWallIndex) {
-            panel.classList.add("panel-active");
-          } else {
-            panel.classList.remove("panel-active");
+          panel.classList.remove("panel-pos-center", "panel-pos-left", "panel-pos-right", "panel-active");
+          if (i === curIdx) {
+            panel.classList.add("panel-pos-center", "panel-active");
+          } else if (i === leftIdx) {
+            panel.classList.add("panel-pos-left");
+          } else if (i === rightIdx) {
+            panel.classList.add("panel-pos-right");
           }
         }
         const tab = document.getElementById("tab-wall-" + i);
         if (tab) {
-          if (i === state.currentWallIndex) {
+          if (i === curIdx) {
             tab.classList.add("active");
           } else {
             tab.classList.remove("active");
@@ -3545,8 +3614,7 @@
 
       // 更新宣纸文字框内容
       const tombKey = state.currentTomb;
-      const wallIdx = state.currentWallIndex;
-      const descObj = FRESCO_DESCRIPTIONS[`${tombKey}.${wallIdx}`] || {
+      const descObj = FRESCO_DESCRIPTIONS[`${tombKey}.${curIdx}`] || {
         title: "北齐壁画",
         text: "珍贵北齐壁画，承载千年历史记忆。"
       };
@@ -3618,7 +3686,13 @@
       state.isWifeZoom = true;
       const overlay = document.getElementById("wife-zoom-overlay");
       const img = document.getElementById("wife-zoom-image");
-      img.src = getAssetUrl("branches.xuxiu.wifeZoom");
+      if (img) {
+        img.onerror = () => {
+          img.onerror = null;
+          img.src = generateFrescoFallback("徐显秀墓 · 夫人画像特写", "高髻步摇 · 袖口转生莲纹", "xuxiu-wife");
+        };
+        img.src = getAssetUrl("branches.xuxiu.wifeZoom");
+      }
       overlay.classList.add("active");
 
       // 渲染夫人袖口莲花热点 h3
@@ -4170,6 +4244,16 @@
             handleUploadedFile(e.dataTransfer.files[0], slotPath, slotType, card);
           }
         };
+
+        // 若已有初始/内置素材，自动回显在卡片上
+        const currentVal = getObjectValueByPath(ASSETS, slotPath);
+        if (currentVal && typeof currentVal === "string" && currentVal.trim() !== "") {
+          const meta = ASSETS_META[slotPath] || {
+            name: currentVal.split("/").pop(),
+            size: "已连接素材"
+          };
+          renderSlotCardState(card, slotPath, currentVal, meta);
+        }
       });
 
       fileInput.onchange = (e) => {
@@ -4277,14 +4361,28 @@
           for (let i = 0; i < 3; i++) {
             const imgEl = document.getElementById("branch-img-" + i);
             if (imgEl) {
+              imgEl.onerror = () => {
+                imgEl.onerror = null;
+                imgEl.src = generateFrescoFallback(
+                  FRESCO_DESCRIPTIONS[`${state.currentTomb}.${i}`]?.title || "北齐壁画",
+                  "壁画原貌摹绘",
+                  `${state.currentTomb}-${i}`
+                );
+              };
               imgEl.src = getAssetUrl(`branches.${state.currentTomb}.walls.${i}`);
             }
           }
           if (state.isWifeZoom) {
             const wifeImg = document.getElementById("wife-zoom-image");
-            if (wifeImg) wifeImg.src = getAssetUrl("branches.xuxiu.wifeZoom");
+            if (wifeImg) {
+              wifeImg.onerror = () => {
+                wifeImg.onerror = null;
+                wifeImg.src = generateFrescoFallback("徐显秀墓 · 夫人画像特写", "高髻步摇 · 袖口转生莲纹", "xuxiu-wife");
+              };
+              wifeImg.src = getAssetUrl("branches.xuxiu.wifeZoom");
+            }
           }
-          renderBranchHotspots();
+          updateBranchCylinderView();
           break;
         case "return":
           const rBird = document.getElementById("return-bird-img");
