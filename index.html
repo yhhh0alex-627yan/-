@@ -1682,27 +1682,68 @@
       object-fit: cover;
       display: block;
     }
-    /* 残缺损坏块 */
+    /* 破损与脏污区域（黑色不规则毛边多边形） */
     .puzzle-patch-box {
       position: absolute;
-      border: 2px dashed var(--c-gold);
-      box-shadow: 0 0 16px rgba(214, 178, 110, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
-      overflow: hidden;
-      filter: blur(10px) brightness(0.35) saturate(0.4);
-      transition: filter 0.6s ease, border-color 0.4s ease, box-shadow 0.4s ease;
-      animation: patchGlowBreath 2s ease-in-out infinite alternate;
+      overflow: visible;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      transition: transform 0.25s ease, opacity 0.65s cubic-bezier(0.25, 1, 0.5, 1), filter 0.65s ease;
+      z-index: 20;
+    }
+    .puzzle-patch-box:hover {
+      transform: scale(1.03);
+    }
+    /* 黑色毛边不规则多边形脏污斑块 */
+    .patch-dirt-stain {
+      position: absolute;
+      inset: -5%;
+      background: radial-gradient(ellipse at 48% 48%, #080605 0%, #0D0A08 65%, #181310 95%);
+      filter: blur(8px) drop-shadow(0 0 10px rgba(0, 0, 0, 0.95));
+      opacity: 0.95;
+      pointer-events: none;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    /* 带有毛边与微光的轮廓线提示 */
+    .patch-contour-ring {
+      position: absolute;
+      inset: -2px;
+      border: 1.5px dashed rgba(214, 178, 110, 0.55);
+      border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+      pointer-events: none;
+      animation: patchGlowBreath 2.2s ease-in-out infinite alternate;
+      box-shadow: 0 0 14px rgba(214, 178, 110, 0.35);
     }
     @keyframes patchGlowBreath {
-      0% { border-color: rgba(214, 178, 110, 0.5); box-shadow: 0 0 8px rgba(214, 178, 110, 0.3); }
-      100% { border-color: var(--c-gold-bright); box-shadow: 0 0 24px rgba(245, 229, 201, 0.7); }
+      0% { border-color: rgba(214, 178, 110, 0.4); box-shadow: 0 0 8px rgba(214, 178, 110, 0.2); }
+      100% { border-color: var(--c-gold-bright); box-shadow: 0 0 20px rgba(245, 229, 201, 0.65); }
     }
-    .puzzle-patch-box.repaired {
-      border: 1px solid rgba(214, 178, 110, 0.2) !important;
-      filter: none !important;
-      animation: none !important;
-      box-shadow: none !important;
-      cursor: default;
+    /* 抹除消散状态 */
+    .puzzle-patch-box.erased {
+      opacity: 0 !important;
+      transform: scale(0.65) !important;
+      filter: blur(16px) !important;
+      pointer-events: none !important;
+    }
+    /* 抹除瞬间的金尘闪光 */
+    .patch-erase-flash {
+      position: absolute;
+      inset: -25%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(245, 229, 201, 0.85) 0%, rgba(214, 178, 110, 0.5) 40%, transparent 75%);
+      pointer-events: none;
+      animation: eraseFlashAnim 0.7s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+      z-index: 25;
+    }
+    @keyframes eraseFlashAnim {
+      0% { opacity: 0; transform: scale(0.4); }
+      40% { opacity: 1; transform: scale(1.15); }
+      100% { opacity: 0; transform: scale(1.5); }
     }
     /* 修复中按压环形进度指示 */
     .patch-hold-ring {
@@ -1712,11 +1753,13 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      z-index: 30;
     }
     .patch-hold-ring svg {
-      width: 44px;
-      height: 44px;
+      width: 46px;
+      height: 46px;
       transform: rotate(-90deg);
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.95));
     }
     .puzzle-hud-progress {
       position: absolute;
@@ -2509,7 +2552,7 @@
       "branches.jiuyuan.walls.2": { name: "jiu-3.jpg", size: "994 KB" },
       "branches.lourui.walls.0": { name: "lou-3.jpg", size: "510 KB" },
       "branches.lourui.walls.1": { name: "lou-1.jpg", size: "3.35 MB" },
-      "branches.lourui.walls.2": { name: "lou-2.jpg", size: "12.5 MB" }
+      "branches.lourui.walls.2": { name: "lou-2.jpg", size: "12.51 MB" }
     };
 
     // 默认热点标定配置（可通过可视化热点编辑工具实时拖拽修改并持久化）
@@ -4187,6 +4230,21 @@
       }
       state.puzzlePatches = patches;
 
+      // 生成带有毛边的不规则多边形 clip-path
+      function createRandomPolygonClip() {
+        const points = [];
+        const vertexCount = 10;
+        for (let i = 0; i < vertexCount; i++) {
+          const baseAng = (i / vertexCount) * Math.PI * 2;
+          const ang = baseAng + (Math.random() - 0.5) * 0.28;
+          const dist = 38 + Math.random() * 12; // 38% ~ 50% 半径
+          const px = Math.round(50 + Math.cos(ang) * dist);
+          const py = Math.round(50 + Math.sin(ang) * dist);
+          points.push(`${Math.max(2, Math.min(98, px))}% ${Math.max(2, Math.min(98, py))}%`);
+        }
+        return `polygon(${points.join(", ")})`;
+      }
+
       patches.forEach(patch => {
         const box = document.createElement("div");
         box.className = "puzzle-patch-box";
@@ -4194,12 +4252,20 @@
         box.style.top = patch.y + "%";
         box.style.width = patch.size + "%";
         box.style.height = (patch.size * 1.1) + "%";
+        box.title = "触碰或长按抹除此处脏污破损";
 
-        // 背景图与精确偏移
-        box.style.backgroundImage = `url("${baseMuralSrc}")`;
-        box.style.backgroundSize = "100% 100%";
-        // 使得该块显示它自己那部分画面
-        box.style.backgroundPosition = `-${patch.x * 6.2}px -${patch.y * 4.2}px`;
+        // 黑色不规则毛边多边形脏污层（底层壁画完整，脏污层覆盖在上）
+        const dirtStain = document.createElement("div");
+        dirtStain.className = "patch-dirt-stain";
+        const polyClip = createRandomPolygonClip();
+        dirtStain.style.clipPath = polyClip;
+        dirtStain.style.webkitClipPath = polyClip;
+        box.appendChild(dirtStain);
+
+        // 外层微光轮廓引导
+        const contour = document.createElement("div");
+        contour.className = "patch-contour-ring";
+        box.appendChild(contour);
 
         // 环形按住指示
         const holdRing = document.createElement("div");
@@ -4212,7 +4278,7 @@
         `;
         box.appendChild(holdRing);
 
-        // 悬停或按住 0.8s 即修复
+        // 悬停或按住 0.8s 进行脏污抹除修复
         let holdTimer = null;
         let holdStartTime = 0;
         const bar = holdRing.querySelector(".hold-circle-bar");
@@ -4227,13 +4293,25 @@
             if (p < 1) {
               holdTimer = requestAnimationFrame(animHold);
             } else {
-              // 完成修复
+              // 完成抹除修复
               patch.repaired = true;
-              box.classList.add("repaired");
               holdRing.remove();
+              contour.remove();
+
+              // 瞬间金尘微粒闪光
+              const flash = document.createElement("div");
+              flash.className = "patch-erase-flash";
+              box.appendChild(flash);
+
+              // 脏污破损块淡化消散，露出底层原本完好无损的壁画背景
+              box.classList.add("erased");
               playRepairChime();
               state.puzzleDoneCount++;
               updatePuzzleProgress();
+
+              setTimeout(() => {
+                box.remove();
+              }, 700);
 
               // 全修复收尾过场
               if (state.puzzleDoneCount >= 3) {
@@ -4267,7 +4345,7 @@
     function regeneratePuzzle() {
       if (state.chapter === "return") {
         initPuzzleBoard();
-        showToast("已重新生成残缺壁画块");
+        showToast("已重新生成破损脏污区域");
       }
     }
 
