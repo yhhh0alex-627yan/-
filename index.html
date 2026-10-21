@@ -1707,6 +1707,50 @@
       justify-content: center;
       background: #0E0C0B;
     }
+    /* 第五章 震动后视频全屏插槽 */
+    #return-video-wrap {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      z-index: 50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    #return-video-player {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .return-video-controls {
+      position: absolute;
+      top: 24px;
+      right: 28px;
+      z-index: 60;
+    }
+    .return-video-skip-btn {
+      padding: 8px 20px;
+      background: rgba(22, 18, 16, 0.85);
+      border: 1px solid var(--c-gold);
+      border-radius: 20px;
+      color: var(--c-gold-bright);
+      font-size: 13px;
+      font-family: var(--font-serif);
+      letter-spacing: 0.15em;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+      transition: all 0.25s ease;
+    }
+    .return-video-skip-btn:hover {
+      border-color: #FFF;
+      color: #FFF;
+      box-shadow: 0 0 16px rgba(214, 178, 110, 0.6);
+      transform: translateY(-1px);
+    }
+
     #return-cutscene-wrap {
       position: absolute;
       inset: 0;
@@ -2333,10 +2377,10 @@
         <!-- 莲相、人相动态展示 -->
         <img class="converge-phase-img" id="converge-phase-img" style="display:none;" alt="三生莲相" />
 
-        <!-- 报幕独白文字（原文照用） -->
-        <div class="converge-monologue-line" id="mono-line-1">在北齐壁画中，莲花有着转生的寓意</div>
-        <div class="converge-monologue-line" id="mono-line-2">墓主人的壁画，代表着对死后升仙的追求</div>
-        <div class="converge-monologue-line" id="mono-line-3">莲花也随着徐显秀夫妇飞升</div>
+        <!-- 报幕独白文字 -->
+        <div class="converge-monologue-line" id="mono-line-1">在北齐时代，莲花代表着“出淤泥而不染”的净土和重生；</div>
+        <div class="converge-monologue-line" id="mono-line-2">祂被视为逝者的精神寄托，</div>
+        <div class="converge-monologue-line" id="mono-line-3">象征着希望借助佛教的力量超度亡魂，通往极乐世界。</div>
       </div>
       <div class="converge-speed-tip">点击任意处可加速播放 (2x)</div>
     </section>
@@ -2345,6 +2389,14 @@
     <section class="chapter-layer" id="layer-return">
       <!-- 盗洞遮罩 -->
       <div id="robber-hole-mask"></div>
+
+      <!-- 震动后视频插槽 -->
+      <div id="return-video-wrap" style="display:none;">
+        <video id="return-video-player" playsinline></video>
+        <div class="return-video-controls">
+          <button class="return-video-skip-btn" id="btn-skip-return-video" title="跳过视频">跳过</button>
+        </div>
+      </div>
 
       <!-- 神鸟越肩跟随过场 -->
       <div id="return-cutscene-wrap">
@@ -2416,7 +2468,7 @@
   <!-- 素材导入抽屉 (role="dialog" aria-modal="true") -->
   <div id="assets-drawer" role="dialog" aria-modal="true" aria-label="素材自主导入系统">
     <div class="drawer-header">
-      <h3>素材自主导入系统 (16 槽位)</h3>
+      <h3>素材自主导入系统 (17 槽位)</h3>
       <button class="drawer-close" id="btn-close-drawer" aria-label="关闭抽屉">✕</button>
     </div>
 
@@ -2461,11 +2513,11 @@
             <div class="slot-desc">拖入图片或点击选择</div>
           </div>
           <div class="slot-card" data-slot="branches.xuxiu.walls.1" data-type="image">
-            <div class="slot-title">东壁：牛车出行与侍女图 (walls[1])</div>
+            <div class="slot-title">东壁：彩绘石门 (walls[1])</div>
             <div class="slot-desc">拖入图片或点击选择</div>
           </div>
           <div class="slot-card" data-slot="branches.xuxiu.walls.2" data-type="image">
-            <div class="slot-title">西壁：备马鞍马骑行图 (walls[2])</div>
+            <div class="slot-title">西壁：备马图 (walls[2])</div>
             <div class="slot-desc">拖入图片或点击选择</div>
           </div>
           <div class="slot-card" data-slot="branches.xuxiu.wifeZoom" data-type="image">
@@ -2487,7 +2539,7 @@
             <div class="slot-desc">拖入图片或点击选择</div>
           </div>
           <div class="slot-card" data-slot="branches.jiuyuan.walls.1" data-type="image">
-            <div class="slot-title">东西壁：大型狩猎长卷 (walls[1])</div>
+            <div class="slot-title">东西壁：墓室狩猎图 (walls[1])</div>
             <div class="slot-desc">拖入图片或点击选择</div>
           </div>
           <div class="slot-card" data-slot="branches.jiuyuan.walls.2" data-type="image">
@@ -2545,10 +2597,24 @@
         </div>
       </div>
 
+      <!-- 第五章震动归墓视频 -->
+      <div class="slot-group">
+        <div class="slot-group-header" onclick="toggleSlotGroup(this)">
+          <span>七、第五章震动归墓视频 (1)</span>
+          <span>▼</span>
+        </div>
+        <div class="slot-group-content">
+          <div class="slot-card" data-slot="returnVideo" data-type="video">
+            <div class="slot-title">震动后转场视频 (returnVideo)</div>
+            <div class="slot-desc">拖入视频 (mp4/webm) 或点击选择</div>
+          </div>
+        </div>
+      </div>
+
       <!-- 终章鸣谢 -->
       <div class="slot-group">
         <div class="slot-group-header" onclick="toggleSlotGroup(this)">
-          <span>七、终章鸣谢视频 (1)</span>
+          <span>八、终章鸣谢视频 (1)</span>
           <span>▼</span>
         </div>
         <div class="slot-group-content">
@@ -2610,6 +2676,7 @@
       },
       lotus: { one: "", two: "", three: "" },   // 莲相 / 人相 / 鸟相
       lotusGroup: "",          // 三生莲组合图
+      returnVideo: "",         // 第五章震动后转场视频（可空）
       ackVideo: ""             // 鸣谢视频（可空）
     };
 
@@ -2647,20 +2714,20 @@
         text: "正壁绘徐显秀夫妇并坐于华盖重幔之下，太尉面蓄美髯，披玄色大裘；夫人头挽高髻，佩步摇金簪，侍从执壶乐伎奏乐。线条沉雄凝练，生动再现了北齐高层胡汉通融的贵族起居风貌。"
       },
       "xuxiu.1": {
-        title: "徐显秀墓 · 牛车出行与侍女图",
-        text: "墓道东壁绘夫人乘卷棚高顶青牛车出行的庄严序列。青牛骨骼健硕，两侧侍女着窄袖襦裙，体态端庄，再现了北齐并州与邺城上层女子流行之车舆礼制。"
+        title: "徐显秀墓 · 彩绘石门",
+        text: "石门质地为细砂石，西门上部刻有鸟身兽头蹄足兽，口衔花草，下部刻有一白虎；东门上部同样刻有一鸟身兽头蹄足兽，口衔花草，下部刻有一青龙；"
       },
       "xuxiu.2": {
-        title: "徐显秀墓 · 备马鞍马骑行图",
-        text: "墓道西壁描摹骑马仪仗，骏马分梳三花，备鞍具连珠饰杏花金装；武士头戴鲜卑垂裙帽，佩剑执幡，顾盼生姿。笔力劲拔苍劲，铁线勾勒洗练精准，具极高军事与服饰考证价值。"
+        title: "徐显秀墓 · 备马图",
+        text: "西壁绘主人准备出行的场面，青罗伞盖下一匹枣红骏马整装待发，马颈下挂着装饰忍冬、联珠纹的缨子，马背上鞍袱边缘绘有联珠纹，连珠纹内绘制类似菩萨的人头像，骏马前面是三个旗手佩剑武士和马夫，后面是羽葆执事、捧官印、扛胡床的随行人员。"
       },
       "jiuyuan.0": {
         title: "九原岗墓 · 升仙双柱门楼图",
         text: "北壁绘我国迄今发现最早、最完整的木构双柱门楼建筑壁画，鸱吻高耸，五铺作重栱繁复。正脊之上绘硕大倒悬升仙宝莲，四周祥云缭绕，寄托了死后羽化升仙之幽思。"
       },
       "jiuyuan.1": {
-        title: "九原岗墓 · 山峦狩猎长卷",
-        text: "墓道东西壁绘巨幅山峦狩猎图。勇士策骑奔腾于苍莽山野间，纵鹰放犬，张弓射杀猛虎与野鹿。构图宏阔纵逸，写尽北方游牧与中原农耕交融碰撞出的尚武雄风。"
+        title: "九原岗墓 · 墓室狩猎图",
+        text: "墓道东西壁绘巨幅墓室狩猎图。勇士策骑奔腾于苍莽山野间，纵鹰放犬，张弓射杀猛虎与野鹿。构图宏阔纵逸，写尽北方游牧与中原农耕交融碰撞出的尚武雄风。"
       },
       "jiuyuan.2": {
         title: "九原岗墓 · 雷公风伯升仙天象",
@@ -3024,15 +3091,15 @@
         case "branches.xuxiu.walls.0":
           return generateFrescoFallback("徐显秀墓 · 夫妇宴饮图", "北齐太尉武安王宴坐极乐", "xuxiu-0");
         case "branches.xuxiu.walls.1":
-          return generateFrescoFallback("徐显秀墓 · 牛车出行图", "卷棚青牛 · 侍女仪卫肃穆", "xuxiu-2");
+          return generateFrescoFallback("徐显秀墓 · 彩绘石门", "细砂石质 · 鸟身兽头青龙白虎", "xuxiu-2");
         case "branches.xuxiu.walls.2":
-          return generateFrescoFallback("徐显秀墓 · 备马鞍马骑行图", "备鞍列仗 · 鲜卑武臣英姿", "xuxiu-1");
+          return generateFrescoFallback("徐显秀墓 · 备马图", "青罗伞盖 · 枣红骏马出行", "xuxiu-1");
         case "branches.xuxiu.wifeZoom":
           return "/public-xu/xu-1-1.jpg";
         case "branches.jiuyuan.walls.0":
           return generateFrescoFallback("九原岗墓 · 升仙双柱门楼图", "古代最高等级木构壁画 · 倒悬宝莲", "jiuyuan-0");
         case "branches.jiuyuan.walls.1":
-          return generateFrescoFallback("九原岗墓 · 猎骑长卷", "张弓发矢 · 弯弓射猛虎", "jiuyuan-1");
+          return generateFrescoFallback("九原岗墓 · 墓室狩猎图", "张弓发矢 · 弯弓射猛虎", "jiuyuan-1");
         case "branches.jiuyuan.walls.2":
           return generateFrescoFallback("九原岗墓 · 升仙天象", "连鼓雷公 · 飞廉御风", "jiuyuan-2");
         case "branches.lourui.walls.0":
@@ -3285,6 +3352,10 @@
       const filmVideo = document.getElementById("film-video-player");
       if (filmVideo) {
         filmVideo.pause();
+      }
+      const returnVideo = document.getElementById("return-video-player");
+      if (returnVideo) {
+        returnVideo.pause();
       }
     }
 
@@ -3802,8 +3873,8 @@
 
       // 三面壁画导航标签文案与切换
       const wallTitles = {
-        xuxiu: ["正壁 · 夫妇宴饮", "东壁 · 牛车出行", "西壁 · 备马游骑"],
-        jiuyuan: ["北壁 · 双柱门楼", "东西 · 狩猎长卷", "上层 · 升仙天象"],
+        xuxiu: ["正壁 · 夫妇宴饮", "东壁 · 彩绘石门", "西壁 · 备马图"],
+        jiuyuan: ["北壁 · 双柱门楼", "东西 · 墓室狩猎图", "上层 · 升仙天象"],
         lourui: ["墓门 · 神鸟衔莲", "墓道 · 鞍马游骑", "主室 · 七人宾客"]
       };
       const curTitles = wallTitles[tomb] || ["壁画一", "壁画二", "壁画三"];
@@ -4235,18 +4306,20 @@
         else if (sec >= 11 && sec < 19) {
           phaseImg.style.display = "none";
           const subSec = sec - 11;
-          // 第一句 (0 - 2.6s)
-          mono1.style.opacity = (subSec >= 0 && subSec <= 2.6) ? "1" : "0";
-          mono1.style.transform = (subSec >= 0 && subSec <= 2.6) ? "translateY(0)" : "translateY(12px)";
-          // 第二句 (2.6 - 5.2s)
-          mono2.style.opacity = (subSec > 2.6 && subSec <= 5.2) ? "1" : "0";
-          mono2.style.transform = (subSec > 2.6 && subSec <= 5.2) ? "translateY(0)" : "translateY(12px)";
-          // 第三句 (5.2 - 8.0s)
-          mono3.style.opacity = (subSec > 5.2 && subSec <= 8.0) ? "1" : "0";
-          mono3.style.transform = (subSec > 5.2 && subSec <= 8.0) ? "translateY(0)" : "translateY(12px)";
+          // 第一句 (0s 浮现)
+          mono1.style.opacity = (subSec >= 0 && subSec < 8.0) ? "1" : "0";
+          mono1.style.transform = (subSec >= 0 && subSec < 8.0) ? "translateY(0)" : "translateY(12px)";
+          // 第二句 (2.4s 浮现)
+          mono2.style.opacity = (subSec >= 2.4 && subSec < 8.0) ? "1" : "0";
+          mono2.style.transform = (subSec >= 2.4 && subSec < 8.0) ? "translateY(0)" : "translateY(12px)";
+          // 第三句 (4.8s 浮现)
+          mono3.style.opacity = (subSec >= 4.8 && subSec < 8.0) ? "1" : "0";
+          mono3.style.transform = (subSec >= 4.8 && subSec < 8.0) ? "translateY(0)" : "translateY(12px)";
         }
         // 阶段 5: 人相出现升起 (19 - 22s)
         else if (sec >= 19 && sec < 22) {
+          mono1.style.opacity = "0";
+          mono2.style.opacity = "0";
           mono3.style.opacity = "0";
           const p = (sec - 19) / 3;
           phaseImg.style.display = "block";
@@ -4279,7 +4352,9 @@
       const puzzleBaseImg = document.getElementById("puzzle-base-img");
 
       puzzleBoard.style.display = "none";
-      cutsceneWrap.style.display = "flex";
+      cutsceneWrap.style.display = "none";
+      const videoWrap = document.getElementById("return-video-wrap");
+      if (videoWrap) videoWrap.style.display = "none";
       birdImg.src = getAssetUrl("lotus.three");
       birdImg.style.opacity = "1";
       birdImg.style.transform = "none";
@@ -4297,11 +4372,54 @@
           requestAnimationFrame(shakeStep);
         } else {
           stage.style.transform = "none";
-          // 阶段 3: 4 秒越肩跟随
-          startOverShoulderFly();
+          // 震动结束后：检查并播放插入的视频
+          playReturnVideo(() => {
+            // 阶段 3: 4 秒越肩跟随
+            cutsceneWrap.style.display = "flex";
+            startOverShoulderFly();
+          });
         }
       }
       requestAnimationFrame(shakeStep);
+
+      // 震动后视频插槽播放逻辑
+      function playReturnVideo(onComplete) {
+        const videoPlayer = document.getElementById("return-video-player");
+        const skipBtn = document.getElementById("btn-skip-return-video");
+        const videoSrc = ASSETS.returnVideo;
+
+        let finished = false;
+        function finishVideo() {
+          if (finished) return;
+          finished = true;
+          if (videoPlayer) {
+            videoPlayer.pause();
+            videoPlayer.onended = null;
+            videoPlayer.onerror = null;
+          }
+          if (videoWrap) videoWrap.style.display = "none";
+          onComplete();
+        }
+
+        if (videoSrc && typeof videoSrc === "string" && videoSrc.trim() !== "") {
+          if (videoWrap) videoWrap.style.display = "flex";
+          if (videoPlayer) {
+            videoPlayer.src = videoSrc;
+            videoPlayer.currentTime = 0;
+            videoPlayer.muted = !state.soundOn;
+            videoPlayer.onended = finishVideo;
+            videoPlayer.onerror = () => {
+              console.warn("Return video error:", videoSrc);
+              finishVideo();
+            };
+            videoPlayer.play().catch(() => finishVideo());
+          }
+          if (skipBtn) skipBtn.onclick = finishVideo;
+        } else {
+          // 未导入/未配置视频时直接进入下一阶段（神鸟越肩与拼图）
+          finishVideo();
+        }
+      }
 
       function startOverShoulderFly() {
         robberMask.style.opacity = "1";
@@ -4947,6 +5065,12 @@
             document.getElementById("ack-video-modal").classList.remove("active");
             return;
           }
+          const retVidWrap = document.getElementById("return-video-wrap");
+          if (retVidWrap && retVidWrap.style.display === "flex") {
+            const skipBtn = document.getElementById("btn-skip-return-video");
+            if (skipBtn) skipBtn.click();
+            return;
+          }
           if (state.chapter === "film") {
             gotoChapter("hall");
             return;
@@ -4954,9 +5078,18 @@
         }
 
         // 空格键影片播放/暂停
-        if (e.key === " " && state.chapter === "film") {
-          e.preventDefault();
-          document.getElementById("film-btn-play").click();
+        if (e.key === " ") {
+          if (state.chapter === "film") {
+            e.preventDefault();
+            document.getElementById("film-btn-play").click();
+          } else if (state.chapter === "return") {
+            const retVidWrap = document.getElementById("return-video-wrap");
+            const retVidPlayer = document.getElementById("return-video-player");
+            if (retVidWrap && retVidWrap.style.display === "flex" && retVidPlayer) {
+              e.preventDefault();
+              if (retVidPlayer.paused) retVidPlayer.play(); else retVidPlayer.pause();
+            }
+          }
         }
       });
     }
