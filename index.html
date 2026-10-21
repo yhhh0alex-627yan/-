@@ -1353,8 +1353,8 @@
     /* 莲纹交互点与放大镜点 */
     .mural-hotspot-marker {
       position: absolute;
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
       transform: translate(-50%, -50%);
       cursor: pointer;
       z-index: 30;
@@ -1363,39 +1363,111 @@
       justify-content: center;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
+      transition: transform 0.25s ease;
     }
     .mural-hotspot-marker * {
       pointer-events: none;
     }
+
+    /* 灵韵外溢：同心扩散的柔和金光涟漪（极其自然地引导视线，空灵而不喧宾夺主） */
+    .hotspot-ripple-ring {
+      position: absolute;
+      inset: -2px;
+      border-radius: 50%;
+      border: 1px solid rgba(245, 229, 201, 0.55);
+      box-shadow: 0 0 8px rgba(214, 178, 110, 0.3);
+      animation: lotusRippleExpand 2.8s cubic-bezier(0.2, 0.6, 0.35, 1) infinite;
+      pointer-events: none;
+    }
+    .hotspot-ripple-ring.delay {
+      animation-delay: 1.4s;
+    }
+    @keyframes lotusRippleExpand {
+      0% { transform: scale(0.82); opacity: 0.7; }
+      50% { opacity: 0.35; }
+      100% { transform: scale(1.7); opacity: 0; }
+    }
+
+    /* 柔和佛光微光晕：柔和淡晕，在斑驳壁画底色中形成舒适的视觉反差 */
+    .hotspot-halo {
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(214, 178, 110, 0.32) 0%, rgba(166, 58, 43, 0.12) 48%, transparent 72%);
+      animation: lotusHaloBreathe 3.2s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+    @keyframes lotusHaloBreathe {
+      0% { opacity: 0.5; transform: scale(0.92); }
+      100% { opacity: 0.95; transform: scale(1.15); }
+    }
+
+    /* 罗经古仪虚线金环 */
     .hotspot-dashed-ring {
       position: absolute;
-      inset: 0;
-      border: 1.5px dashed var(--c-gold);
+      inset: 2px;
+      border: 1.5px dashed rgba(245, 229, 201, 0.8);
       border-radius: 50%;
-      animation: hotspotSpin 10s linear infinite;
+      box-shadow: inset 0 0 6px rgba(214, 178, 110, 0.25), 0 0 6px rgba(214, 178, 110, 0.35);
+      animation: hotspotSpin 12s linear infinite;
     }
     @keyframes hotspotSpin {
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
     }
+
+    /* 核心莲花图标：北齐转生宝莲，灵动浮沉 */
     .hotspot-core-icon {
-      width: 22px;
-      height: 22px;
+      position: relative;
+      width: 25px;
+      height: 25px;
       display: flex;
       align-items: center;
       justify-content: center;
-      animation: hotspotPulse 2.2s ease-in-out infinite alternate;
+      animation: lotusPulseFloat 2.4s ease-in-out infinite alternate;
     }
     .hotspot-core-icon svg {
       width: 100%;
       height: 100%;
-      fill: var(--c-gold);
-      stroke: var(--c-gold-bright);
-      stroke-width: 1;
+      filter: drop-shadow(0 0 6px rgba(214, 178, 110, 0.7));
     }
-    @keyframes hotspotPulse {
-      0% { opacity: 0.5; transform: scale(0.9); }
-      100% { opacity: 0.95; transform: scale(1.15); filter: drop-shadow(0 0 6px var(--c-gold)); }
+    @keyframes lotusPulseFloat {
+      0% { opacity: 0.78; transform: scale(0.95) translateY(1px); filter: drop-shadow(0 0 4px rgba(214, 178, 110, 0.5)); }
+      100% { opacity: 1; transform: scale(1.1) translateY(-1px); filter: drop-shadow(0 0 8px rgba(245, 229, 201, 0.95)); }
+    }
+
+    /* 莲花热点悬停微提示 */
+    .hotspot-lotus-tip {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      margin-top: 4px;
+      padding: 2px 8px;
+      background: rgba(22, 18, 16, 0.92);
+      border: 1px solid var(--c-gold);
+      border-radius: 10px;
+      color: #F5E5C9;
+      font-size: 11px;
+      font-family: var(--font-serif);
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.85);
+      letter-spacing: 0.1em;
+    }
+    .mural-hotspot-marker:hover .hotspot-lotus-tip {
+      opacity: 1;
+      transform: translateX(-50%) translateY(2px);
+    }
+    .mural-hotspot-marker:hover .hotspot-dashed-ring {
+      border-color: #FFF;
+      box-shadow: 0 0 16px rgba(245, 229, 201, 0.8), inset 0 0 10px rgba(245, 229, 201, 0.5);
+      transform: scale(1.08);
+    }
+    .mural-hotspot-marker:hover .hotspot-core-icon {
+      transform: scale(1.15);
     }
 
     /* 夫人画像常驻特写热点 (h2) */
@@ -2239,7 +2311,7 @@
           </button>
           <div class="wife-zoom-header">
             <span class="wife-zoom-tag">徐显秀墓 · 夫人画像特写</span>
-            <span class="wife-zoom-sub">素材: public-xu/xu-1-1.jpg · 细察右臂袖口转生莲纹</span>
+            <span class="wife-zoom-sub">素材: /public-xu/xu-1-1.jpg · 细察右臂袖口转生莲纹</span>
           </div>
           <img class="wife-zoom-img" id="wife-zoom-image" src="/public-xu/xu-1-1.jpg" alt="徐显秀夫人画像特写" />
           <!-- 夫人袖口热点容器 -->
@@ -2441,7 +2513,7 @@
             <div class="slot-desc">拖入图片或点击选择</div>
           </div>
           <div class="slot-card" data-slot="branches.lourui.walls.2" data-type="image">
-            <div class="slot-title">主室：出行仪仗图 (walls[2])</div>
+            <div class="slot-title">主室：七人宾客图 (walls[2])</div>
             <div class="slot-desc">拖入图片或点击选择</div>
           </div>
         </div>
@@ -2514,8 +2586,8 @@
           name: "徐显秀墓", 
           walls: [
             "/public-xu/xu-1.jpg", // 正壁：夫妇宴饮图
-            "/public-xu/xu-2.jpg", // 东壁：牛车出行与侍女图
-            "/public-xu/xu-3.jpg"  // 西壁：备马鞍马骑行图
+            "/public-xu/xu-3.jpg", // 东壁：连接 xu-3.jpg 作为素材填充
+            "/public-xu/xu-2.jpg"  // 西壁：连接 xu-2.jpg 作为素材填充
           ], 
           wifeZoom: "/public-xu/xu-1-1.jpg" 
         },
@@ -2532,7 +2604,7 @@
           walls: [
             "/public-lou/lou-3.jpg", // 墓门：神鸟衔莲与天象 (lou-3.jpg)
             "/public-lou/lou-1.jpg", // 墓道：鞍马游骑图 (lou-1.jpg)
-            "/public-lou/lou-2.jpg"  // 主室：出行仪仗图 (lou-2.jpg)
+            "/public-lou/lou-2.jpg"  // 主室：七人宾客图 (lou-2.jpg)
           ] 
         }
       },
@@ -2544,8 +2616,8 @@
     // 已导入的文件元信息（用于抽屉回显）
     const ASSETS_META = {
       "branches.xuxiu.walls.0": { name: "xu-1.jpg", size: "2.14 MB" },
-      "branches.xuxiu.walls.1": { name: "xu-2.jpg", size: "415 KB" },
-      "branches.xuxiu.walls.2": { name: "xu-3.jpg", size: "670 KB" },
+      "branches.xuxiu.walls.1": { name: "xu-3.jpg", size: "670 KB" },
+      "branches.xuxiu.walls.2": { name: "xu-2.jpg", size: "415 KB" },
       "branches.xuxiu.wifeZoom": { name: "xu-1-1.jpg", size: "1.09 MB" },
       "branches.jiuyuan.walls.0": { name: "jiu-1.jpg", size: "505 KB" },
       "branches.jiuyuan.walls.1": { name: "jiu-2.jpg", size: "7.51 MB" },
@@ -2563,7 +2635,7 @@
         { id: "h3", page: "xuxiu.wifeZoom",  label: "莲纹（夫人袖口）",   x: 27, y: 78 },
         { id: "h4", page: "jiuyuan.walls.0", label: "莲纹（门楼正上方）", x: 50, y: 12 },
         { id: "h5", page: "lourui.walls.0",  label: "莲纹（神鸟衔莲）",   x: 16, y: 14 },
-        { id: "h6", page: "xuxiu.walls.0",   label: "神鸟落点（夫人袖口）", x: 44, y: 70 }
+        { id: "h6", page: "xuxiu.walls.0",   label: "莲纹（夫人袖口）",   x: 44, y: 70 }
       ],
       storageKey: "beiqifresco_museum_v1"
     };
@@ -2603,8 +2675,8 @@
         text: "相传出自北齐画圣杨子华手笔。画面中骑从或驻马回首长嘶，或扬蹄疾进，线描如游丝拔落，马匹肌理神采奕奕，被奉为中国古代重彩壁画无可逾越的高峰典范。"
       },
       "lourui.2": {
-        title: "娄睿墓 · 出行仪仗图",
-        text: "主室墓道两侧绘大官仪从，鲜卑重臣身着朱绯大袍，仪卫各执仪槊长刀。笔触流畅沉着，色彩以赭石石绿交相辉映，尽显东安郡王权倾一时的赫赫门第。"
+        title: "娄睿墓 · 七人宾客图",
+        text: "主室壁画生动描摹七位宾客相聚叙谈之景，画中人物神情各异，或拱手致意，或顾盼私语，冠带服饰具胡汉交融之风，线条简括洗练，尽显东安郡王府第门客云集的雍容气象。"
       }
     };
 
@@ -2616,7 +2688,8 @@
       currentTomb: "xuxiu",       // xuxiu | jiuyuan | lourui
       currentWallIndex: 0,        // 0 | 1 | 2
       isWifeZoom: false,          // 支线子态：夫人特写
-      lotusCollected: [],         // 已收集莲花 ID 列表: ["h1", "h3", "h4", "h5"]
+      h2Interacted: false,        // 是否已与 h2 夫人特写进行过交互（解锁 h6）
+      lotusCollected: [],         // 已收集金莲 ID 列表 (上限4个): ["h1", "h5", "h4", "h6"]
       visitedBranches: [],        // 已探索支线
       puzzlePatches: [],          // 第五章拼图 3 个残缺块坐标与修复状态
       puzzleDoneCount: 0,
@@ -2967,7 +3040,7 @@
         case "branches.lourui.walls.1":
           return generateFrescoFallback("娄睿墓 · 鞍马游骑图", "北齐杨子华绝代名作 · 顾盼神飞", "lourui-1");
         case "branches.lourui.walls.2":
-          return generateFrescoFallback("娄睿墓 · 出行仪仗图", "鲜卑权臣 · 旌旗槊仗齐备", "lourui-2");
+          return generateFrescoFallback("娄睿墓 · 七人宾客图", "主室壁画 · 七人宾客相聚叙谈", "lourui-2");
         case "lotus.one":
           return generateFrescoFallback("三生莲 · 莲相（因）", "千瓣宝莲 · 佛光化育", "lotus-one");
         case "lotus.two":
@@ -3138,8 +3211,11 @@
             }
           }
           if (Array.isArray(parsed.lotusCollected)) {
-            // 确保 h2（常驻特写）与 h6（归墓落点）不混入莲花槽位
-            state.lotusCollected = parsed.lotusCollected.filter(id => id !== "h2" && id !== "h6");
+            // 确保仅包含合法金莲 ID (h1, h5, h4, h6)，且上限为 4 朵
+            state.lotusCollected = parsed.lotusCollected.filter(id => id !== "h2").slice(0, 4);
+          }
+          if (typeof parsed.h2Interacted === "boolean") {
+            state.h2Interacted = parsed.h2Interacted;
           }
           if (Array.isArray(parsed.visitedBranches)) {
             state.visitedBranches = parsed.visitedBranches;
@@ -3167,7 +3243,8 @@
       try {
         const payload = {
           chapter: state.chapter,
-          lotusCollected: state.lotusCollected.filter(id => id !== "h2" && id !== "h6"),
+          lotusCollected: state.lotusCollected.filter(id => id !== "h2").slice(0, 4),
+          h2Interacted: !!state.h2Interacted,
           visitedBranches: state.visitedBranches,
           soundOn: state.soundOn,
           hotspots: CONFIG.hotspots
@@ -3179,14 +3256,20 @@
     }
 
     function resetSaveData() {
-      if (!confirm("确定要清空全部闯关存档与自定义热点吗？")) return;
+      if (!confirm("确定要重置金莲收集与流程进度吗？")) return;
       localStorage.removeItem(CONFIG.storageKey);
       state.lotusCollected = [];
+      state.h2Interacted = false;
       state.visitedBranches = [];
       state.puzzleDoneCount = 0;
       updateLotusHUD();
-      gotoChapter("intro");
-      showToast("存档已重置");
+      if (state.isWifeZoom) closeWifeZoom();
+      if (state.chapter === "branch") {
+        renderBranchHotspots();
+      } else {
+        gotoChapter("hall");
+      }
+      showToast("已重置：金莲收集已归零，全部热点已恢复交互");
     }
 
     /* ==========================================================================
@@ -3721,7 +3804,7 @@
       const wallTitles = {
         xuxiu: ["正壁 · 夫妇宴饮", "东壁 · 牛车出行", "西壁 · 备马游骑"],
         jiuyuan: ["北壁 · 双柱门楼", "东西 · 狩猎长卷", "上层 · 升仙天象"],
-        lourui: ["墓门 · 神鸟衔莲", "墓道 · 鞍马游骑", "主室 · 出行仪仗"]
+        lourui: ["墓门 · 神鸟衔莲", "墓道 · 鞍马游骑", "主室 · 七人宾客"]
       };
       const curTitles = wallTitles[tomb] || ["壁画一", "壁画二", "壁画三"];
       for (let i = 0; i < 3; i++) {
@@ -3804,6 +3887,26 @@
       renderBranchHotspots();
     }
 
+    // 渲染未收集的灵韵莲花节点内容（微光涟漪 + 佛光微晕 + 虚线金环 + 宝莲 + 悬停提示）
+    function createLotusMarkerHTML(tipText = "点击悟莲") {
+      return `
+        <div class="hotspot-halo"></div>
+        <div class="hotspot-ripple-ring"></div>
+        <div class="hotspot-ripple-ring delay"></div>
+        <div class="hotspot-dashed-ring"></div>
+        <div class="hotspot-core-icon">
+          <svg viewBox="0 0 32 32">
+            <circle cx="16" cy="16" r="14" fill="none" stroke="rgba(214,178,110,0.3)" stroke-width="0.8" stroke-dasharray="2 3"/>
+            <path d="M10 14 C7 17 6.5 21 8.5 24 C11 25.5 13.5 24.5 14 23 C12.5 20.5 12 17 10 14 Z" fill="rgba(214,178,110,0.8)" stroke="#F5E5C9" stroke-width="0.8"/>
+            <path d="M22 14 C25 17 25.5 21 23.5 24 C21 25.5 18.5 24.5 18 23 C19.5 20.5 20 17 22 14 Z" fill="rgba(214,178,110,0.8)" stroke="#F5E5C9" stroke-width="0.8"/>
+            <path d="M16 5 C13.5 10.5 12.5 16 12.8 21.5 C14.5 23.5 17.5 23.5 19.2 21.5 C19.5 16 18.5 10.5 16 5 Z" fill="#D6B26E" stroke="#FFF" stroke-width="1.1"/>
+            <path d="M11 24 C13.5 25.5 18.5 25.5 21 24 C20 26.5 12 26.5 11 24 Z" fill="#8C6F36" stroke="#D6B26E" stroke-width="0.7"/>
+          </svg>
+        </div>
+        <div class="hotspot-lotus-tip">${tipText}</div>
+      `;
+    }
+
     function renderBranchHotspots() {
       // 清空展墙热点挂载层
       for (let i = 0; i < 3; i++) {
@@ -3822,8 +3925,12 @@
         if (!targetLayer) continue;
 
         activeHotspots.forEach(h => {
-          // h2 为徐显秀墓夫人的常驻特写热点，永不因收集莲花而消失！
+          // 规则1：h2 为徐显秀墓夫人的常驻特写热点，永不因收集莲花而消失
+          // 规则2：金莲热点（h1, h5, h4, h6）在点击收集后无法再次点击，直到点击重置按钮
           if (h.id !== "h2" && state.lotusCollected.includes(h.id)) return;
+
+          // 规则3：其中 h6 交互必须在 h2 被交互后！若尚未与 h2 交互，h6 不激活展示
+          if (h.id === "h6" && !state.h2Interacted) return;
 
           const marker = document.createElement("div");
           marker.style.left = h.x + "%";
@@ -3852,21 +3959,20 @@
               isTriggering = true;
               setTimeout(() => { isTriggering = false; }, 350);
               if (state.isEditingHotspots) return;
+              // 关键：标记 h2 已被交互，解锁 h6
+              state.h2Interacted = true;
+              saveCurrentState();
               initAudio();
               playLotusChime();
               openWifeZoom();
+              renderBranchHotspots(); // 刷新展墙热点，使 h6 立即变为可交互状态
             };
             marker.onclick = triggerWifeZoom;
             marker.onpointerdown = triggerWifeZoom;
           } else {
-            // 莲花热点
+            // 莲花热点 (h1, h5, h4, h6)
             marker.className = "mural-hotspot-marker";
-            marker.innerHTML = `
-              <div class="hotspot-dashed-ring"></div>
-              <div class="hotspot-core-icon">
-                <svg viewBox="0 0 24 24"><path d="M12 2C12 2 8 8 8 13C8 16.5 10 19 12 21C14 19 16 16.5 16 13C16 8 12 2 12 2Z"/></svg>
-              </div>
-            `;
+            marker.innerHTML = createLotusMarkerHTML(h.id === "h6" ? "袖口金莲" : "悟得金莲");
             let isCollecting = false;
             const triggerCollect = (e) => {
               if (e) {
@@ -3876,6 +3982,7 @@
               if (isCollecting) return;
               isCollecting = true;
               if (state.isEditingHotspots) return;
+              if (state.lotusCollected.length >= 4) return;
               collectLotus(h, marker);
             };
             marker.onclick = triggerCollect;
@@ -3888,6 +3995,8 @@
 
     function openWifeZoom() {
       state.isWifeZoom = true;
+      state.h2Interacted = true;
+      saveCurrentState();
       const overlay = document.getElementById("wife-zoom-overlay");
       const img = document.getElementById("wife-zoom-image");
       if (img) {
@@ -3900,22 +4009,17 @@
       }
       overlay.classList.add("active");
 
-      // 渲染夫人袖口莲花热点 h3 (精准落在袖口白底转生莲花纹上)
+      // 渲染夫人袖口莲花热点 h6 (若已收集过 h6，则不再展示)
       const container = document.getElementById("wife-hotspots-container");
       container.innerHTML = "";
-      const h3 = CONFIG.hotspots.find(h => h.id === "h3");
-      if (h3 && !state.lotusCollected.includes("h3")) {
+      if (!state.lotusCollected.includes("h6") && state.lotusCollected.length < 4) {
+        const h3Config = CONFIG.hotspots.find(h => h.id === "h3") || { x: 27, y: 78 };
         const marker = document.createElement("div");
         marker.className = "mural-hotspot-marker";
-        marker.style.left = h3.x + "%";
-        marker.style.top = h3.y + "%";
-        marker.setAttribute("title", h3.label);
-        marker.innerHTML = `
-          <div class="hotspot-dashed-ring"></div>
-          <div class="hotspot-core-icon">
-            <svg viewBox="0 0 24 24"><path d="M12 2C12 2 8 8 8 13C8 16.5 10 19 12 21C14 19 16 16.5 16 13C16 8 12 2 12 2Z"/></svg>
-          </div>
-        `;
+        marker.style.left = h3Config.x + "%";
+        marker.style.top = h3Config.y + "%";
+        marker.setAttribute("title", "莲纹（夫人袖口）");
+        marker.innerHTML = createLotusMarkerHTML("袖口金莲");
         let isCollecting = false;
         const triggerCollect = (e) => {
           if (e) {
@@ -3925,7 +4029,8 @@
           if (isCollecting) return;
           isCollecting = true;
           if (state.isEditingHotspots) return;
-          collectLotus(h3, marker);
+          if (state.lotusCollected.length >= 4) return;
+          collectLotus({ id: "h6", label: "莲纹（夫人袖口）" }, marker);
         };
         marker.onclick = triggerCollect;
         marker.onpointerdown = triggerCollect;
@@ -3941,6 +4046,7 @@
 
     // 收集莲花动效：贝塞尔飞向顶部槽位
     function collectLotus(hotspotObj, markerEl) {
+      if (state.lotusCollected.length >= 4) return;
       if (state.lotusCollected.includes(hotspotObj.id)) return;
       state.lotusCollected.push(hotspotObj.id);
       saveCurrentState();
@@ -3956,7 +4062,14 @@
       // 创建飞行的莲花节点
       const flying = document.createElement("div");
       flying.className = "flying-lotus-node";
-      flying.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2C12 2 8 8 8 13C8 16.5 10 19 12 21C14 19 16 16.5 16 13C16 8 12 2 12 2Z"/></svg>`;
+      flying.innerHTML = `
+        <svg viewBox="0 0 32 32" style="width:100%;height:100%;filter:drop-shadow(0 0 10px #D6B26E);">
+          <path d="M10 14 C7 17 6.5 21 8.5 24 C11 25.5 13.5 24.5 14 23 C12.5 20.5 12 17 10 14 Z" fill="rgba(214,178,110,0.85)" stroke="#F5E5C9" stroke-width="0.8"/>
+          <path d="M22 14 C25 17 25.5 21 23.5 24 C21 25.5 18.5 24.5 18 23 C19.5 20.5 20 17 22 14 Z" fill="rgba(214,178,110,0.85)" stroke="#F5E5C9" stroke-width="0.8"/>
+          <path d="M16 5 C13.5 10.5 12.5 16 12.8 21.5 C14.5 23.5 17.5 23.5 19.2 21.5 C19.5 16 18.5 10.5 16 5 Z" fill="#F5E5C9" stroke="#FFF" stroke-width="1.2"/>
+          <path d="M11 24 C13.5 25.5 18.5 25.5 21 24 C20 26.5 12 26.5 11 24 Z" fill="#8C6F36" stroke="#D6B26E" stroke-width="0.7"/>
+        </svg>
+      `;
       document.body.appendChild(flying);
 
       const startX = startRect.left + startRect.width / 2;
@@ -3992,6 +4105,7 @@
             setTimeout(() => slotEl.classList.remove("pulse"), 800);
           }
           markerEl.remove();
+          renderBranchHotspots();
 
           // 检查是否集齐 4 朵，集齐立即触发第四章
           if (state.lotusCollected.length >= 4) {
@@ -4859,17 +4973,19 @@
       }, 2400);
     }
 
-    // 调试辅助：快速集齐四莲（仅收集 h1, h3, h4, h5，保留 h2 常驻特写）
+    // 调试辅助：快速集齐四莲（h1, h5, h4, h6，保留 h2 常驻特写）
     function debugCollectAllLotuses() {
-      const lotusIds = ["h1", "h3", "h4", "h5"];
+      const lotusIds = ["h1", "h5", "h4", "h6"];
       lotusIds.forEach(id => {
         if (!state.lotusCollected.includes(id)) {
           state.lotusCollected.push(id);
         }
       });
+      state.h2Interacted = true;
       updateLotusHUD();
       saveCurrentState();
-      showToast("已调试集齐四朵转生之莲");
+      if (state.chapter === "branch") renderBranchHotspots();
+      showToast("已调试集齐四朵转生之莲 (h1, h5, h4, h6)");
     }
 
     /* ==========================================================================
