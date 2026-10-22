@@ -293,6 +293,27 @@
     #edit-mode-banner.active {
       display: flex;
     }
+    .btn-banner-action {
+      margin-left: 18px;
+      padding: 3px 12px;
+      background: #0E0C0B;
+      color: #F5E5C9;
+      border: 1px solid #D6B26E;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: normal;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-banner-action:hover {
+      background: #D6B26E;
+      color: #0E0C0B;
+    }
+
 
     /* 右下角素材按钮与左下角调试按钮 */
     #btn-assets-toggle {
@@ -1780,6 +1801,54 @@
       transition: opacity 0.5s ease;
     }
 
+    /* 拼图完成后飞入夫人衣袖的明亮光点与强烈曝光效果 */
+    .spirit-light-orb {
+      position: fixed;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #FFFFFF 0%, #FFF5D0 30%, #D6B26E 60%, rgba(214,178,110,0) 85%);
+      box-shadow: 
+        0 0 25px 12px #FFFFFF,
+        0 0 50px 25px #F5E5C9,
+        0 0 90px 45px #D6B26E;
+      filter: drop-shadow(0 0 30px #FFF) drop-shadow(0 0 60px #D6B26E);
+      pointer-events: none;
+      z-index: 1000;
+      transition: left 2.2s cubic-bezier(0.2, 0.8, 0.25, 1), 
+                  top 2.2s cubic-bezier(0.2, 0.8, 0.25, 1), 
+                  transform 2.2s cubic-bezier(0.2, 0.8, 0.25, 1), 
+                  opacity 2.2s ease;
+      transform-origin: center center;
+    }
+    .spirit-light-orb::after {
+      content: "";
+      position: absolute;
+      inset: -12px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.85);
+      animation: orbHaloPulse 0.8s ease-in-out infinite alternate;
+    }
+    @keyframes orbHaloPulse {
+      0% { transform: scale(0.9); opacity: 0.6; }
+      100% { transform: scale(1.4); opacity: 1; }
+    }
+
+    #puzzle-exposure-overlay {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #FFFFFF;
+      pointer-events: none;
+      z-index: 1200;
+      opacity: 0;
+      transition: opacity 0.35s ease-out;
+    }
+    #puzzle-exposure-overlay.flash {
+      opacity: 1;
+    }
+
     /* 拼图修复舞台 */
     #puzzle-board {
       position: relative;
@@ -1929,31 +1998,108 @@
       filter: contrast(1.3);
     }
     .end-ip-wrap {
-      position: relative;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
       z-index: 5;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 16px;
+      justify-content: center;
       opacity: 0;
       transition: opacity 1.2s ease;
+      perspective: 1500px;
     }
-    .end-group-img {
-      width: clamp(660px, 72vw, 1180px);
-      max-height: clamp(520px, 72vh, 860px);
-      object-fit: contain;
-      filter: drop-shadow(0 0 70px rgba(214, 178, 110, 0.75)) drop-shadow(0 0 140px rgba(184, 75, 41, 0.45));
-      mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 62%, rgba(0,0,0,0.88) 80%, transparent 100%);
-      -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 62%, rgba(0,0,0,0.88) 80%, transparent 100%);
+    .end-header-bar {
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      z-index: 30;
+      pointer-events: none;
+    }
+    .end-header-badge {
+      font-family: var(--font-serif);
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: var(--c-clay);
+      border: 1px solid rgba(214, 178, 110, 0.3);
+      padding: 2px 10px;
+      border-radius: 12px;
+      background: rgba(20, 16, 14, 0.7);
+    }
+    .end-header-title {
+      font-family: var(--font-serif);
+      font-size: clamp(17px, 1.8vw, 22px);
+      font-weight: 700;
+      color: var(--c-gold-bright);
+      letter-spacing: 0.3em;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.9), 0 0 15px rgba(214, 178, 110, 0.5);
+    }
+    #end-cylinder-wrap {
+      position: relative;
+      width: clamp(740px, 70vw, 1080px);
+      height: clamp(460px, 62vh, 660px);
+      perspective: 1600px;
+      z-index: 10;
+    }
+    #end-btn-prev {
+      left: 36px;
+    }
+    #end-btn-next {
+      right: 36px;
+    }
+    #end-wall-tabs {
+      position: absolute;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 35;
+      background: rgba(20, 16, 14, 0.88);
+      padding: 6px 16px;
+      border-radius: 24px;
+      border: 1px solid rgba(214, 178, 110, 0.35);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.75);
+    }
+    #end-textbox {
+      position: absolute;
+      bottom: 42px;
+      left: 64px;
+      max-width: 350px;
+      padding: 16px 20px;
+      background: rgba(237, 228, 211, 0.94);
+      color: #1A1412;
+      border-radius: 6px;
+      border-left: 5px solid var(--c-red);
+      font-size: 14px;
+      line-height: 1.85;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.85);
+      z-index: 32;
+      text-align: left;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      pointer-events: none;
     }
     .end-ip-caption {
+      position: absolute;
+      bottom: 6px;
+      left: 50%;
+      transform: translateX(-50%);
       font-family: var(--font-serif);
-      font-size: 15px;
-      letter-spacing: 0.25em;
-      color: var(--c-gold);
-    }
-    .end-ack-btn {
-      margin-top: 10px;
+      font-size: 11.5px;
+      letter-spacing: 0.16em;
+      color: rgba(214, 178, 110, 0.7);
+      pointer-events: none;
+      z-index: 30;
+      white-space: nowrap;
     }
 
     /* 鸣谢视频全屏弹窗 */
@@ -2110,7 +2256,8 @@
 
     <!-- 热点编辑模式顶部横条 -->
     <div id="edit-mode-banner">
-      <span>热点编辑模式 · 拖动圆点标定 · Esc 退出 · 自动保存</span>
+      <span>热点编辑模式 · 拖动圆点标定 · Esc 退出</span>
+      <button id="btn-save-default-coords" class="btn-banner-action" title="将当前各热点坐标永久固化为源码初始默认配置">💾 保存为初始默认坐标</button>
     </div>
 
     <!-- 浮动坐标信息条 -->
@@ -2387,24 +2534,37 @@
 
     <!-- 第五章 return 归墓与拼图 -->
     <section class="chapter-layer" id="layer-return">
-      <!-- 盗洞遮罩 -->
-      <div id="robber-hole-mask"></div>
+      <!-- 视频插槽（第四章人像后至拼图前的过渡视频，完全对标第一章控制体系） -->
+      <div id="return-video-wrap" class="film-video-wrap" style="position:absolute;inset:0;width:100%;height:100%;background:#000;z-index:50;display:none;">
+        <video id="return-video-player" playsinline style="width:100%;height:100%;object-fit:contain;"></video>
+        <canvas id="return-fallback-canvas" style="position:absolute;inset:0;width:100%;height:100%;display:none;"></canvas>
 
-      <!-- 震动后视频插槽 -->
-      <div id="return-video-wrap" style="display:none;">
-        <video id="return-video-player" playsinline></video>
-        <div class="return-video-controls">
-          <button class="return-video-skip-btn" id="btn-skip-return-video" title="跳过视频">跳过</button>
+        <div class="film-controls" id="return-video-controls">
+          <button class="film-play-btn" id="return-btn-play" title="播放/暂停 (空格)">
+            <svg id="return-icon-play" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <svg id="return-icon-pause" style="display:none;" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+          </button>
+
+          <div class="film-progress-container" id="return-progress-container">
+            <div class="film-progress-track">
+              <div class="film-progress-fill" id="return-progress-fill"></div>
+            </div>
+            <div class="film-timecode-tip" id="return-timecode-tip">00:00 / 00:00</div>
+          </div>
+
+          <button class="film-mute-btn" id="return-btn-mute" title="静音切换">
+            <svg id="return-icon-vol-on" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            <svg id="return-icon-vol-muted" style="display:none;" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+          </button>
+
+          <button class="film-skip-btn" id="btn-skip-return-video" title="跳过 (Esc)">
+            跳过
+          </button>
         </div>
       </div>
 
-      <!-- 神鸟越肩跟随过场 -->
-      <div id="return-cutscene-wrap">
-        <img class="return-bird-img" id="return-bird-img" alt="神鸟相" />
-      </div>
-
       <!-- 拼图修复板 -->
-      <div id="puzzle-board">
+      <div id="puzzle-board" style="display:none;">
         <img class="puzzle-base-img" id="puzzle-base-img" alt="徐显秀夫妇宴饮图" />
         <!-- 3 个随机残缺块容器 -->
         <div id="puzzle-patches-container"></div>
@@ -2412,25 +2572,90 @@
       </div>
     </section>
 
+    <!-- 全屏剧烈曝光白光层 -->
+    <div id="puzzle-exposure-overlay"></div>
+
     <!-- 第六章 end 终章 -->
     <section class="chapter-layer" id="layer-end">
+      <!-- 视频插槽：三生莲介绍视频（对标第一章控制体系） -->
+      <div id="lotus-video-wrap" class="film-video-wrap" style="position:absolute;inset:0;width:100%;height:100%;background:#000;z-index:50;display:none;">
+        <video id="lotus-video-player" playsinline style="width:100%;height:100%;object-fit:contain;"></video>
+        <canvas id="lotus-fallback-canvas" style="position:absolute;inset:0;width:100%;height:100%;display:none;"></canvas>
+
+        <div class="film-controls" id="lotus-video-controls">
+          <button class="film-play-btn" id="lotus-btn-play" title="播放/暂停 (空格)">
+            <svg id="lotus-icon-play" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <svg id="lotus-icon-pause" style="display:none;" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+          </button>
+
+          <div class="film-progress-container" id="lotus-progress-container">
+            <div class="film-progress-track">
+              <div class="film-progress-fill" id="lotus-progress-fill"></div>
+            </div>
+            <div class="film-timecode-tip" id="lotus-timecode-tip">00:00 / 00:00</div>
+          </div>
+
+          <button class="film-mute-btn" id="lotus-btn-mute" title="静音切换">
+            <svg id="lotus-icon-vol-on" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            <svg id="lotus-icon-vol-muted" style="display:none;" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+          </button>
+
+          <button class="film-skip-btn" id="btn-skip-lotus-video" title="跳过 (Esc)">
+            跳过
+          </button>
+        </div>
+      </div>
+
       <div id="end-white-flash"></div>
       <div class="end-big-char" id="end-char-zhong">终</div>
       
       <div class="end-ip-wrap" id="end-ip-wrap">
-        <img class="end-group-img" id="end-group-img" alt="三生莲三生相合璧" />
-        <div class="end-ip-caption">此为自设 IP 形象</div>
-        <button class="btn-gold end-ack-btn" id="btn-show-ack">
-          <span>鸣 谢</span>
+        <!-- 顶部标题徽标 -->
+        <div class="end-header-bar">
+          <div class="end-header-badge">北齐神韵 · 自设 IP</div>
+          <h2 class="end-header-title">三生莲 · 三相化境展示</h2>
+        </div>
+
+        <!-- 环形 3D 展墙（人像、莲像、神鸟像） -->
+        <div id="end-cylinder-wrap">
+          <div class="cylinder-panel panel-active panel-pos-center" id="end-panel-0" data-index="0" title="点击查看人像">
+            <img class="panel-img" id="end-img-0" alt="人像" />
+            <div class="panel-hotspots-layer"></div>
+          </div>
+          <div class="cylinder-panel panel-pos-right" id="end-panel-1" data-index="1" title="点击查看莲像">
+            <img class="panel-img" id="end-img-1" alt="莲像" />
+            <div class="panel-hotspots-layer"></div>
+          </div>
+          <div class="cylinder-panel panel-pos-left" id="end-panel-2" data-index="2" title="点击查看神鸟像">
+            <img class="panel-img" id="end-img-2" alt="神鸟像" />
+            <div class="panel-hotspots-layer"></div>
+          </div>
+        </div>
+
+        <!-- 左右切换箭头 -->
+        <button class="cylinder-nav-btn" id="end-btn-prev" title="上一尊 (方向键左)">
+          <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
+        <button class="cylinder-nav-btn" id="end-btn-next" title="下一尊 (方向键右)">
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+
+        <!-- 三面切换指示标签条 -->
+        <div id="end-wall-tabs">
+          <button class="branch-wall-tab active" data-index="0" id="end-tab-0">人像</button>
+          <button class="branch-wall-tab" data-index="1" id="end-tab-1">莲像</button>
+          <button class="branch-wall-tab" data-index="2" id="end-tab-2">神鸟像</button>
+        </div>
+
+        <!-- 宣纸跟随解说文字框 -->
+        <div id="end-textbox">
+          <div class="textbox-title" id="end-textbox-title">三生相 · 人像（飞天化生神女）</div>
+          <div class="textbox-content" id="end-textbox-content">取意北齐壁画中飞天与贵妇礼佛之姿。神女云髻巍峨，身披朱红流霞披帛，双手捧持转生金莲，容貌肃穆而慈悲，寓意脱离六道轮回、往生极乐净土。</div>
+        </div>
+
+        <div class="end-ip-caption">此为自设 IP 形象 · 点击展墙、左右按钮或下方标签可切换浏览</div>
       </div>
     </section>
-
-    <!-- 鸣谢视频弹窗 -->
-    <div id="ack-video-modal">
-      <button class="ack-modal-close" id="btn-close-ack">关闭鸣谢</button>
-      <video id="ack-video-player" playsinline></video>
-    </div>
 
   </div> <!-- /#stage -->
 
@@ -2458,8 +2683,9 @@
       <button class="debug-btn" onclick="gotoChapter('end')">终章 (end)</button>
       <button class="debug-btn" onclick="debugCollectAllLotuses()">集齐四莲</button>
     </div>
-    <div class="debug-title" style="margin-top:6px;">存档操作</div>
+    <div class="debug-title" style="margin-top:6px;">热点与存档</div>
     <div class="debug-btns">
+      <button class="debug-btn" onclick="syncHotspotsToServer(CONFIG.hotspots, true)">固化为默认</button>
       <button class="debug-btn" onclick="resetSaveData()">清空存档</button>
       <button class="debug-btn" onclick="regeneratePuzzle()">重置拼图</button>
     </div>
@@ -2574,53 +2800,49 @@
       <!-- 三生莲 IP -->
       <div class="slot-group">
         <div class="slot-group-header" onclick="toggleSlotGroup(this)">
-          <span>六、三生莲自设 IP (4)</span>
+          <span>六、三生莲自设 IP (3)</span>
           <span>▼</span>
         </div>
         <div class="slot-group-content">
-          <div class="slot-card" data-slot="lotus.one" data-type="image">
-            <div class="slot-title">莲相（因）：千瓣转生宝莲</div>
+          <div class="slot-card" data-slot="lotus.ren" data-type="image">
+            <div class="slot-title">人像（果）：飞天化生神女 (/public-san/ren.jpg)</div>
             <div class="slot-desc">拖入图片或点击选择</div>
           </div>
-          <div class="slot-card" data-slot="lotus.two" data-type="image">
-            <div class="slot-title">人相（果）：飞天化生神女</div>
+          <div class="slot-card" data-slot="lotus.lian" data-type="image">
+            <div class="slot-title">莲像（因）：千瓣转生宝莲 (/public-san/lian.jpg)</div>
             <div class="slot-desc">拖入图片或点击选择</div>
           </div>
-          <div class="slot-card" data-slot="lotus.three" data-type="image">
-            <div class="slot-title">鸟相（引）：衔莲升仙神鸟</div>
-            <div class="slot-desc">拖入图片或点击选择</div>
-          </div>
-          <div class="slot-card" data-slot="lotusGroup" data-type="image">
-            <div class="slot-title">三生莲三相合璧组合图</div>
+          <div class="slot-card" data-slot="lotus.niao" data-type="image">
+            <div class="slot-title">神鸟像（引）：朱雀衔莲仙禽 (/public-san/niao.jpg)</div>
             <div class="slot-desc">拖入图片或点击选择</div>
           </div>
         </div>
       </div>
 
-      <!-- 第五章震动归墓视频 -->
+      <!-- 第四关人像至拼图过渡视频 -->
       <div class="slot-group">
         <div class="slot-group-header" onclick="toggleSlotGroup(this)">
-          <span>七、第五章震动归墓视频 (1)</span>
+          <span>七、第四关人像至拼图过渡视频 (1)</span>
           <span>▼</span>
         </div>
         <div class="slot-group-content">
           <div class="slot-card" data-slot="returnVideo" data-type="video">
-            <div class="slot-title">震动后转场视频 (returnVideo)</div>
-            <div class="slot-desc">拖入视频 (mp4/webm) 或点击选择</div>
+            <div class="slot-title">过渡视频 (returnVideo)</div>
+            <div class="slot-desc">第四关人像后至拼图前的转场视频，拖入视频 (mp4/webm) 或点击选择</div>
           </div>
         </div>
       </div>
 
-      <!-- 终章鸣谢 -->
+      <!-- 三生莲介绍视频 -->
       <div class="slot-group">
         <div class="slot-group-header" onclick="toggleSlotGroup(this)">
-          <span>八、终章鸣谢视频 (1)</span>
+          <span>八、三生莲介绍视频 (1)</span>
           <span>▼</span>
         </div>
         <div class="slot-group-content">
-          <div class="slot-card" data-slot="ackVideo" data-type="video">
-            <div class="slot-title">鸣谢视频 (ackVideo)</div>
-            <div class="slot-desc">拖入视频 (mp4/webm) 或点击选择</div>
+          <div class="slot-card" data-slot="lotusIntroVideo" data-type="video">
+            <div class="slot-title">三生莲介绍视频 (lotusIntroVideo)</div>
+            <div class="slot-desc">拼图曝光后播放的三生莲介绍视频，拖入视频 (mp4/webm) 或点击选择</div>
           </div>
         </div>
       </div>
@@ -2674,16 +2896,25 @@
           ] 
         }
       },
-      lotus: { one: "/assets/aistudio/dcbd134f1810eec76f0b8d84bc413fad_db7addac.jpg", two: "", three: "" },   // 莲相 / 人相 / 鸟相
-      lotusGroup: "",          // 三生莲组合图
-      returnVideo: "",         // 第五章震动后转场视频（可空）
-      ackVideo: ""             // 鸣谢视频（可空）
+      lotus: { 
+        ren: "/public-san/ren.jpg",    // 人像（果 · 飞天神女）
+        lian: "/public-san/lian.jpg",  // 莲像（因 · 千瓣宝莲）
+        niao: "/public-san/niao.jpg",  // 神鸟像（引 · 衔莲朱雀）
+        one: "/public-san/lian.jpg",   // 兼顾第四章莲相
+        two: "/public-san/ren.jpg",    // 兼顾第四章人相
+        three: "/public-san/niao.jpg"  // 兼顾第四章鸟相
+      },
+      lotusGroup: "",          // 三生莲组合图（备用）
+      returnVideo: "",         // 第四关人像后至拼图前过渡视频（可空，对标第一章控制体系）
+      lotusIntroVideo: ""      // 拼图曝光后三生莲介绍视频（可空，对标第一章控制体系）
     };
 
     // 已导入的文件元信息（用于抽屉回显）
     const ASSETS_META = {
       "introImage": { name: "一念生莲·序章底图 (___3b06c6d7.jpg)", size: "456 KB" },
-      "lotus.one": { name: "莲相·因 (dcbd134f1810eec76f0b8d84bc413fad_db7addac.jpg)", size: "1.68 MB" },
+      "lotus.ren": { name: "ren.jpg (人像)", size: "1.80 MB" },
+      "lotus.lian": { name: "lian.jpg (莲像)", size: "1.64 MB" },
+      "lotus.niao": { name: "niao.jpg (神鸟像)", size: "1.71 MB" },
       "branches.xuxiu.walls.0": { name: "xu-1.jpg", size: "2.14 MB" },
       "branches.xuxiu.walls.1": { name: "xu-3.jpg", size: "670 KB" },
       "branches.xuxiu.walls.2": { name: "xu-2.jpg", size: "415 KB" },
@@ -2701,9 +2932,9 @@
       hotspots: [
         { id: "h1", page: "xuxiu.walls.0",   label: "莲纹（宴饮图背景）", x: 18, y: 34 },
         { id: "h2", page: "xuxiu.walls.0",   label: "夫人画像特写 (常驻)", x: 44, y: 64, permanent: true },
-        { id: "h3", page: "xuxiu.wifeZoom",  label: "莲纹（夫人袖口）",   x: 27, y: 78 },
+        { id: "h3", page: "xuxiu.wifeZoom",  label: "莲纹（夫人袖口）",   x: 33.8, y: 79.9 },
         { id: "h4", page: "jiuyuan.walls.0", label: "莲纹（门楼正上方）", x: 50, y: 12 },
-        { id: "h5", page: "lourui.walls.0",  label: "莲纹（神鸟衔莲）",   x: 16, y: 14 },
+        { id: "h5", page: "lourui.walls.0",  label: "莲纹（神鸟衔莲）",   x: 44.1, y: 13.6 },
         { id: "h6", page: "xuxiu.walls.0",   label: "莲纹（夫人袖口）",   x: 44, y: 70 }
       ],
       storageKey: "beiqifresco_museum_v1"
@@ -2767,7 +2998,8 @@
       activeDragHotspotId: null,  // 当前拖动的热点 ID
       rafId: null,                // 动画帧句柄
       audioCtx: null,             // Web Audio 上下文
-      convergeFast: false         // 汇聚过场是否 2 倍速
+      convergeFast: false,        // 汇聚过场是否 2 倍速
+      endLotusIndex: 0            // 终章当前选中的三生相：0 人像 | 1 莲像 | 2 神鸟像
     };
 
     /* ==========================================================================
@@ -3110,12 +3342,18 @@
           return generateFrescoFallback("娄睿墓 · 鞍马游骑图", "北齐杨子华绝代名作 · 顾盼神飞", "lourui-1");
         case "branches.lourui.walls.2":
           return generateFrescoFallback("娄睿墓 · 七人宾客图", "主室壁画 · 七人宾客相聚叙谈", "lourui-2");
+        case "lotus.ren":
+          return "/public-san/ren.jpg";
+        case "lotus.lian":
+          return "/public-san/lian.jpg";
+        case "lotus.niao":
+          return "/public-san/niao.jpg";
         case "lotus.one":
-          return "/assets/aistudio/dcbd134f1810eec76f0b8d84bc413fad_db7addac.jpg";
+          return "/public-san/lian.jpg";
         case "lotus.two":
-          return generateFrescoFallback("三生莲 · 人相（果）", "飞天神女 · 慈悲升仙", "lotus-two");
+          return "/public-san/ren.jpg";
         case "lotus.three":
-          return generateFrescoFallback("三生莲 · 鸟相（引）", "展翅神鸟 · 引魂破壁", "lotus-three");
+          return "/public-san/niao.jpg";
         case "lotusGroup":
           return generateFrescoFallback("三生莲 · 三相合璧", "莲生神女 · 鸟引飞仙", "lotus-group");
         default:
@@ -3294,17 +3532,44 @@
           }
           if (Array.isArray(parsed.hotspots)) {
             // 载入用户自定义的热点标定
+            let hasChanged = false;
             parsed.hotspots.forEach(savedH => {
               const target = CONFIG.hotspots.find(h => h.id === savedH.id);
               if (target) {
+                if (target.x !== savedH.x || target.y !== savedH.y) {
+                  hasChanged = true;
+                }
                 target.x = savedH.x;
                 target.y = savedH.y;
               }
             });
+            // 自动同步用户浏览器中已调整的热点坐标到源码中固化为默认初始位置
+            if (hasChanged) {
+              syncHotspotsToServer(CONFIG.hotspots, false);
+            }
           }
         }
       } catch (e) {
         console.warn("Failed to load save:", e);
+      }
+    }
+
+    async function syncHotspotsToServer(hotspots, notify = false) {
+      try {
+        const payloadHotspots = hotspots || CONFIG.hotspots;
+        const res = await fetch("/api/sync-hotspots", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ hotspots: payloadHotspots })
+        });
+        if (res.ok) {
+          if (notify) {
+            showToast("热点坐标已成功固化为源码初始默认位置！");
+          }
+          console.log("[HotspotSync] Hotspots synced to source code:", payloadHotspots);
+        }
+      } catch (e) {
+        console.warn("[HotspotSync] Failed to sync hotspots to server:", e);
       }
     }
 
@@ -3358,6 +3623,10 @@
       const returnVideo = document.getElementById("return-video-player");
       if (returnVideo) {
         returnVideo.pause();
+      }
+      const lotusVideo = document.getElementById("lotus-video-player");
+      if (lotusVideo) {
+        lotusVideo.pause();
       }
     }
 
@@ -4277,9 +4546,9 @@
           ctx.fillStyle = "rgba(245, 229, 201, " + (0.5 + p * 0.5) + ")";
           ctx.fill();
         }
-        // 阶段 2: 莲相浮现与粒子爆发 (4 - 8s)
-        else if (sec >= 4 && sec < 8) {
-          const p = (sec - 4) / 4;
+        // 阶段 2: 莲相浮现与粒子爆发 (4 - 9s, 存在时间延长至 5 秒)
+        else if (sec >= 4 && sec < 9) {
+          const p = (sec - 4) / 5;
           // 粒子向四周迸散
           particles.forEach(pt => {
             pt.x += pt.vx;
@@ -4291,47 +4560,48 @@
             ctx.fill();
           });
 
-          // 莲花像浮现
+          // 莲花像浮现并维持展示 5 秒
           phaseImg.style.display = "block";
           phaseImg.src = getAssetUrl("lotus.one");
-          phaseImg.style.opacity = String(Math.min(p * 2, 1));
-          phaseImg.style.transform = `scale(${0.85 + Math.min(p, 1) * 0.15})`;
+          phaseImg.style.opacity = String(Math.min((sec - 4) * 1.5, 1));
+          phaseImg.style.transform = `scale(${0.85 + Math.min((sec - 4) * 0.35, 1) * 0.15})`;
         }
-        // 阶段 3: 莲花上升消散 (8 - 11s)
-        else if (sec >= 8 && sec < 11) {
-          const p = (sec - 8) / 3;
-          phaseImg.style.opacity = String(1 - p);
+        // 阶段 3: 莲花上升消散 (9 - 12s)
+        else if (sec >= 9 && sec < 12) {
+          const p = (sec - 9) / 3;
+          phaseImg.style.opacity = String(Math.max(0, 1 - p));
           phaseImg.style.filter = `blur(${p * 8}px)`;
           phaseImg.style.transform = `translateY(-${p * 80}px) scale(${1 - p * 0.15})`;
         }
-        // 阶段 4: 报幕独白纯黑底三行 (11 - 19s)
-        else if (sec >= 11 && sec < 19) {
+        // 阶段 4: 报幕独白纯黑底三行 (12 - 20s)
+        else if (sec >= 12 && sec < 20) {
           phaseImg.style.display = "none";
-          const subSec = sec - 11;
+          const subSec = sec - 12;
           // 第一句 (0s 浮现)
           mono1.style.opacity = (subSec >= 0 && subSec < 8.0) ? "1" : "0";
           mono1.style.transform = (subSec >= 0 && subSec < 8.0) ? "translateY(0)" : "translateY(12px)";
-          // 第二句 (2.4s 浮现)
-          mono2.style.opacity = (subSec >= 2.4 && subSec < 8.0) ? "1" : "0";
-          mono2.style.transform = (subSec >= 2.4 && subSec < 8.0) ? "translateY(0)" : "translateY(12px)";
-          // 第三句 (4.8s 浮现)
-          mono3.style.opacity = (subSec >= 4.8 && subSec < 8.0) ? "1" : "0";
-          mono3.style.transform = (subSec >= 4.8 && subSec < 8.0) ? "translateY(0)" : "translateY(12px)";
+          // 第二句 (2.5s 浮现)
+          mono2.style.opacity = (subSec >= 2.5 && subSec < 8.0) ? "1" : "0";
+          mono2.style.transform = (subSec >= 2.5 && subSec < 8.0) ? "translateY(0)" : "translateY(12px)";
+          // 第三句 (5.0s 浮现)
+          mono3.style.opacity = (subSec >= 5.0 && subSec < 8.0) ? "1" : "0";
+          mono3.style.transform = (subSec >= 5.0 && subSec < 8.0) ? "translateY(0)" : "translateY(12px)";
         }
-        // 阶段 5: 人相出现升起 (19 - 22s)
-        else if (sec >= 19 && sec < 22) {
+        // 阶段 5: 人相出现升起并停留 (20 - 25s, 存在时间延长至 5 秒)
+        else if (sec >= 20 && sec < 25) {
           mono1.style.opacity = "0";
           mono2.style.opacity = "0";
           mono3.style.opacity = "0";
-          const p = (sec - 19) / 3;
+          const p = (sec - 20) / 5;
           phaseImg.style.display = "block";
           phaseImg.src = getAssetUrl("lotus.two");
-          phaseImg.style.opacity = String(Math.min(p * 2, 1));
+          phaseImg.style.opacity = String(Math.min((sec - 20) * 1.5, 1));
           phaseImg.style.filter = "none";
-          phaseImg.style.transform = `translateY(${(1 - Math.min(p, 1)) * 60}px)`;
+          phaseImg.style.transform = `translateY(${(1 - Math.min((sec - 20) * 0.8, 1)) * 50}px)`;
         }
-        // 结束过场，进入第五章
-        else if (sec >= 22) {
+        // 人相结束，直接进入第五章过渡视频
+        else if (sec >= 25) {
+          phaseImg.style.display = "none";
           gotoChapter("return");
           return;
         }
@@ -4342,101 +4612,205 @@
     }
 
     /* ==========================================================================
-       各章实现：【第五章 return · 归墓与拼图】
-       1. 震动黑闪 -> 2. 神鸟相浮现 -> 3. 越肩穿过盗洞跟随 -> 4. 拼图修复
+       各章实现：【第五章 return · 归墓过渡与拼图】
+       第四关人像后直入过渡视频插槽（对标第一章控制体系），播放完毕或跳过后直接进入拼图
        ========================================================================== */
     function mountReturnChapter() {
-      const stage = document.getElementById("stage");
-      const cutsceneWrap = document.getElementById("return-cutscene-wrap");
-      const birdImg = document.getElementById("return-bird-img");
-      const robberMask = document.getElementById("robber-hole-mask");
-      const puzzleBoard = document.getElementById("puzzle-board");
-      const puzzleBaseImg = document.getElementById("puzzle-base-img");
-
-      puzzleBoard.style.display = "none";
-      cutsceneWrap.style.display = "none";
+      const video = document.getElementById("return-video-player");
+      const fallbackCanvas = document.getElementById("return-fallback-canvas");
+      const playBtn = document.getElementById("return-btn-play");
+      const muteBtn = document.getElementById("return-btn-mute");
+      const progressFill = document.getElementById("return-progress-fill");
+      const timecodeTip = document.getElementById("return-timecode-tip");
+      const progressContainer = document.getElementById("return-progress-container");
+      const skipBtn = document.getElementById("btn-skip-return-video");
       const videoWrap = document.getElementById("return-video-wrap");
-      if (videoWrap) videoWrap.style.display = "none";
-      birdImg.src = getAssetUrl("lotus.three");
-      birdImg.style.opacity = "1";
-      birdImg.style.transform = "none";
-      robberMask.style.opacity = "0";
+      const puzzleBoard = document.getElementById("puzzle-board");
 
-      // 阶段 1: 0.6 秒震动 + 黑闪
-      const shakeStart = performance.now();
-      function shakeStep(now) {
-        const p = (now - shakeStart) / 600;
-        if (p < 1) {
-          const amp = (1 - p) * 8;
-          const rx = (Math.random() * 2 - 1) * amp;
-          const ry = (Math.random() * 2 - 1) * amp;
-          stage.style.transform = `translate(${rx}px, ${ry}px)`;
-          requestAnimationFrame(shakeStep);
-        } else {
-          stage.style.transform = "none";
-          // 震动结束后：检查并播放插入的视频
-          playReturnVideo(() => {
-            // 阶段 3: 4 秒越肩跟随
-            cutsceneWrap.style.display = "flex";
-            startOverShoulderFly();
-          });
+      const playIcon = document.getElementById("return-icon-play");
+      const pauseIcon = document.getElementById("return-icon-pause");
+      const volOnIcon = document.getElementById("return-icon-vol-on");
+      const volMutedIcon = document.getElementById("return-icon-vol-muted");
+
+      // 隐藏拼图板，展现视频插槽层
+      puzzleBoard.style.display = "none";
+      videoWrap.style.display = "flex";
+      progressFill.style.width = "0%";
+      fallbackCanvas.style.display = "none";
+      video.style.display = "block";
+
+      const videoSrc = ASSETS.returnVideo;
+      let usingFallback = false;
+      let finished = false;
+
+      function finishVideo() {
+        if (finished) return;
+        finished = true;
+        if (video) {
+          video.pause();
+          video.onended = null;
+          video.onerror = null;
+          video.ontimeupdate = null;
+          video.oncanplay = null;
         }
+        if (state.rafId) {
+          cancelAnimationFrame(state.rafId);
+          state.rafId = null;
+        }
+        videoWrap.style.display = "none";
+        puzzleBoard.style.display = "block";
+        initPuzzleBoard();
       }
-      requestAnimationFrame(shakeStep);
 
-      // 震动后视频插槽播放逻辑
-      function playReturnVideo(onComplete) {
-        const videoPlayer = document.getElementById("return-video-player");
-        const skipBtn = document.getElementById("btn-skip-return-video");
-        const videoSrc = ASSETS.returnVideo;
+      // 降级动画（未上传视频时，提供流畅的壁画意境过渡，支持随时跳过）
+      let fallbackStartTime = 0;
+      const fallbackDuration = 6000; // 6秒程序化过渡
 
-        let finished = false;
-        function finishVideo() {
-          if (finished) return;
-          finished = true;
-          if (videoPlayer) {
-            videoPlayer.pause();
-            videoPlayer.onended = null;
-            videoPlayer.onerror = null;
+      function runFallback() {
+        if (usingFallback) return;
+        usingFallback = true;
+        video.style.display = "none";
+        fallbackCanvas.style.display = "block";
+        const ctx = fallbackCanvas.getContext("2d");
+        const w = fallbackCanvas.width = window.innerWidth;
+        const h = fallbackCanvas.height = window.innerHeight;
+        fallbackStartTime = performance.now();
+
+        function renderFallbackLoop(now) {
+          if (state.chapter !== "return") return;
+          const elapsed = now - fallbackStartTime;
+          const progress = Math.min(elapsed / fallbackDuration, 1);
+          progressFill.style.width = (progress * 100) + "%";
+
+          const curSec = Math.floor(elapsed / 1000);
+          const totalSec = Math.floor(fallbackDuration / 1000);
+          timecodeTip.textContent = `${formatTime(curSec)} / ${formatTime(totalSec)}`;
+
+          ctx.fillStyle = "#0C0A09";
+          ctx.fillRect(0, 0, w, h);
+
+          // 仿古水墨光晕与金色流光
+          const grad = ctx.createRadialGradient(w / 2, h / 2, 20, w / 2, h / 2, Math.max(w, h) * 0.6);
+          grad.addColorStop(0, "rgba(214, 178, 110, " + (0.35 * (1 - progress * 0.3)) + ")");
+          grad.addColorStop(0.5, "rgba(166, 58, 43, 0.12)");
+          grad.addColorStop(1, "rgba(14, 12, 11, 0.95)");
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, w, h);
+
+          // 核心篆印与提示
+          ctx.save();
+          ctx.font = "bold 36px serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillStyle = "#F5E5C9";
+          ctx.fillText("北 齐 · 越 肩 归 墓", w / 2, h / 2 - 26);
+          ctx.font = "14px sans-serif";
+          ctx.fillStyle = "rgba(214, 178, 110, 0.85)";
+          ctx.fillText("【过渡视频插槽 · 可在右下角素材抽屉导入 mp4/webm，或按 Esc 跳过】", w / 2, h / 2 + 26);
+          ctx.restore();
+
+          if (progress >= 1) {
+            finishVideo();
+            return;
           }
-          if (videoWrap) videoWrap.style.display = "none";
-          onComplete();
+          state.rafId = requestAnimationFrame(renderFallbackLoop);
         }
+        state.rafId = requestAnimationFrame(renderFallbackLoop);
+      }
 
-        if (videoSrc && typeof videoSrc === "string" && videoSrc.trim() !== "") {
-          if (videoWrap) videoWrap.style.display = "flex";
-          if (videoPlayer) {
-            videoPlayer.src = videoSrc;
-            videoPlayer.currentTime = 0;
-            videoPlayer.muted = !state.soundOn;
-            videoPlayer.onended = finishVideo;
-            videoPlayer.onerror = () => {
-              console.warn("Return video error:", videoSrc);
-              finishVideo();
-            };
-            videoPlayer.play().catch(() => finishVideo());
-          }
-          if (skipBtn) skipBtn.onclick = finishVideo;
-        } else {
-          // 未导入/未配置视频时直接进入下一阶段（神鸟越肩与拼图）
+      // 如果已导入/配置视频
+      if (videoSrc && typeof videoSrc === "string" && videoSrc.trim() !== "") {
+        video.src = videoSrc;
+        video.muted = !state.soundOn;
+        if (volOnIcon && volMutedIcon) {
+          volOnIcon.style.display = state.soundOn ? "block" : "none";
+          volMutedIcon.style.display = state.soundOn ? "none" : "block";
+        }
+        let canPlayTimeout = setTimeout(() => {
+          runFallback();
+        }, 3500);
+
+        video.oncanplay = () => {
+          clearTimeout(canPlayTimeout);
+          video.play().catch(() => runFallback());
+        };
+        video.onerror = () => {
+          clearTimeout(canPlayTimeout);
+          runFallback();
+        };
+        video.onended = () => {
           finishVideo();
+        };
+        video.ontimeupdate = () => {
+          if (!video.duration) return;
+          const p = (video.currentTime / video.duration) * 100;
+          progressFill.style.width = p + "%";
+          timecodeTip.textContent = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
+        };
+      } else {
+        runFallback();
+      }
+
+      // 播放/暂停
+      playBtn.onclick = () => {
+        if (usingFallback) {
+          if (state.rafId) {
+            cancelAnimationFrame(state.rafId);
+            state.rafId = null;
+            playIcon.style.display = "block";
+            pauseIcon.style.display = "none";
+          } else {
+            fallbackStartTime = performance.now() - (parseFloat(progressFill.style.width) / 100) * fallbackDuration;
+            playIcon.style.display = "none";
+            pauseIcon.style.display = "block";
+            runFallback();
+          }
+        } else {
+          if (video.paused) {
+            video.play();
+            playIcon.style.display = "none";
+            pauseIcon.style.display = "block";
+          } else {
+            video.pause();
+            playIcon.style.display = "block";
+            pauseIcon.style.display = "none";
+          }
         }
-      }
+      };
 
-      function startOverShoulderFly() {
-        robberMask.style.opacity = "1";
-        birdImg.style.transition = "transform 3.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 3.8s ease, filter 3.8s ease";
-        birdImg.style.transform = "translate(180px, -120px) scale(1.6)";
-        birdImg.style.filter = "blur(5px)";
+      // 监听播放状态切换图标
+      video.onplay = () => {
+        playIcon.style.display = "none";
+        pauseIcon.style.display = "block";
+      };
+      video.onpause = () => {
+        playIcon.style.display = "block";
+        pauseIcon.style.display = "none";
+      };
 
-        setTimeout(() => {
-          // 结束时落在宴饮图全屏居中，展现拼图修复板
-          cutsceneWrap.style.display = "none";
-          robberMask.style.opacity = "0";
-          puzzleBoard.style.display = "block";
-          initPuzzleBoard();
-        }, 3900);
-      }
+      // 静音切换
+      muteBtn.onclick = () => {
+        video.muted = !video.muted;
+        volOnIcon.style.display = video.muted ? "none" : "block";
+        volMutedIcon.style.display = video.muted ? "block" : "none";
+        showToast(video.muted ? "静音" : "原声");
+      };
+
+      // 进度条拖拽与跳转
+      progressContainer.onclick = (e) => {
+        const rect = progressContainer.getBoundingClientRect();
+        const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        if (usingFallback) {
+          fallbackStartTime = performance.now() - ratio * fallbackDuration;
+        } else if (video.duration) {
+          video.currentTime = ratio * video.duration;
+        }
+      };
+
+      // 跳过按钮
+      skipBtn.onclick = () => {
+        finishVideo();
+      };
     }
 
     function initPuzzleBoard() {
@@ -4584,98 +4958,392 @@
     }
 
     // 三块修复完毕后：神鸟从右上飞出绕一圈飞向夫人袖口落点 h6
+    // 三块修复完毕后：明亮光点从屏幕右上角飞入夫人袖口落点 h6，并触发强烈白光曝光
     function runPuzzleEndCutscene() {
-      const h6 = CONFIG.hotspots.find(h => h.id === "h6") || { x: 52, y: 70 };
-      const boardRect = document.getElementById("puzzle-board").getBoundingClientRect();
+      const h6 = CONFIG.hotspots.find(h => h.id === "h6") || { x: 44, y: 70 };
+      const board = document.getElementById("puzzle-board");
+      const boardRect = board.getBoundingClientRect();
       const targetX = boardRect.left + (h6.x / 100) * boardRect.width;
       const targetY = boardRect.top + (h6.y / 100) * boardRect.height;
 
-      const bird = document.createElement("div");
-      bird.style.position = "fixed";
-      bird.style.width = "48px";
-      bird.style.height = "48px";
-      bird.style.zIndex = "500";
-      bird.style.pointerEvents = "none";
-      bird.style.transition = "all 2.4s cubic-bezier(0.25, 1, 0.5, 1)";
-      bird.style.left = (window.innerWidth + 50) + "px";
-      bird.style.top = "100px";
-      bird.innerHTML = `<img src="${getAssetUrl('lotus.three')}" style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 0 10px #D6B26E);"/>`;
-      document.body.appendChild(bird);
+      // 创建明亮耀眼的金白灵光光点 (spirit-light-orb)
+      const orb = document.createElement("div");
+      orb.className = "spirit-light-orb";
+      orb.style.left = (window.innerWidth + 80) + "px";
+      orb.style.top = "-40px";
+      orb.style.transform = "scale(0.8)";
+      document.body.appendChild(orb);
 
-      setTimeout(() => {
-        bird.style.left = targetX + "px";
-        bird.style.top = targetY + "px";
-        bird.style.transform = "scale(0.3) rotate(360deg)";
-        bird.style.opacity = "0.2";
-      }, 50);
-
-      setTimeout(() => {
-        bird.remove();
-        // 闪金光后进入终章
-        const stage = document.getElementById("stage");
-        stage.style.filter = "brightness(2) contrast(1.2)";
+      // 顺滑弧线飞入落点并持续变大变亮
+      requestAnimationFrame(() => {
         setTimeout(() => {
-          stage.style.filter = "none";
+          orb.style.left = (targetX - 16) + "px";
+          orb.style.top = (targetY - 16) + "px";
+          orb.style.transform = "scale(2.2)";
+        }, 50);
+      });
+
+      // 撞入衣袖瞬间：剧烈曝光（全屏耀眼白光过曝闪亮）
+      setTimeout(() => {
+        playRepairChime();
+        const flashOverlay = document.getElementById("puzzle-exposure-overlay");
+        if (flashOverlay) {
+          flashOverlay.classList.add("flash");
+        }
+        const stage = document.getElementById("stage");
+        stage.style.filter = "brightness(3) contrast(1.5)";
+
+        setTimeout(() => {
+          orb.remove();
+          // 在曝光强光遮掩下直接进入终章（播放三生莲介绍视频）
           gotoChapter("end");
-        }, 500);
-      }, 2500);
+          setTimeout(() => {
+            if (flashOverlay) flashOverlay.classList.remove("flash");
+            stage.style.filter = "none";
+          }, 400);
+        }, 450);
+      }, 2250);
+    }
+
+    const LOTUS_IP_DESCRIPTIONS = [
+      {
+        key: "ren",
+        slot: "lotus.ren",
+        name: "人像",
+        title: "三生相 · 人像（飞天化生神女）",
+        sub: "果 · 超度亡魂 · 飞升极乐",
+        text: "取意北齐壁画中飞天与贵妇礼佛之姿。神女云髻巍峨，身披朱红流霞披帛，双手捧持转生金莲，容貌肃穆而慈悲，寓意脱离六道轮回、往生极乐净土。"
+      },
+      {
+        key: "lian",
+        slot: "lotus.lian",
+        name: "莲像",
+        title: "三生相 · 莲像（千瓣转生宝莲）",
+        sub: "因 · 出离尘滓 · 净土重生",
+        text: "取意九原岗门楼与墓室藻井升仙宝莲。千瓣吐蕊，外绕忍冬联珠纹与流光祥云，象征“出淤泥而不染”的清净自性，作为逝者精神寄托与重生之因。"
+      },
+      {
+        key: "niao",
+        slot: "lotus.niao",
+        name: "神鸟像",
+        title: "三生相 · 神鸟像（朱雀衔莲仙禽）",
+        sub: "引 · 凌空展翼 · 接引太虚",
+        text: "取意娄睿墓门额之神鸟衔莲与天象仙禽。朱雀振翼翱翔星汉云海，口衔转生金莲，羽翮流光溢彩，为亡魂引路穿行天界太虚、羽化登仙。"
+      }
+    ];
+
+    function updateEndCylinderView() {
+      const curIdx = state.endLotusIndex || 0;
+      const leftIdx = (curIdx + 2) % 3;
+      const rightIdx = (curIdx + 1) % 3;
+
+      for (let i = 0; i < 3; i++) {
+        const panel = document.getElementById("end-panel-" + i);
+        if (panel) {
+          panel.classList.remove("panel-pos-center", "panel-pos-left", "panel-pos-right", "panel-active");
+          if (i === curIdx) {
+            panel.classList.add("panel-pos-center", "panel-active");
+          } else if (i === leftIdx) {
+            panel.classList.add("panel-pos-left");
+          } else if (i === rightIdx) {
+            panel.classList.add("panel-pos-right");
+          }
+        }
+        const tab = document.getElementById("end-tab-" + i);
+        if (tab) {
+          if (i === curIdx) {
+            tab.classList.add("active");
+          } else {
+            tab.classList.remove("active");
+          }
+        }
+      }
+
+      const info = LOTUS_IP_DESCRIPTIONS[curIdx] || LOTUS_IP_DESCRIPTIONS[0];
+      const titleEl = document.getElementById("end-textbox-title");
+      const contentEl = document.getElementById("end-textbox-content");
+      if (titleEl) titleEl.textContent = info.title;
+      if (contentEl) contentEl.textContent = info.text;
+    }
+
+    function initEndGallery() {
+      // 设定三面像图像（人像、莲像、神鸟像）
+      for (let i = 0; i < 3; i++) {
+        const imgEl = document.getElementById("end-img-" + i);
+        const info = LOTUS_IP_DESCRIPTIONS[i];
+        if (imgEl && info) {
+          imgEl.onerror = () => {
+            imgEl.onerror = null;
+            imgEl.src = generateFrescoFallback(info.title, info.sub, i === 0 ? "lotus-two" : i === 1 ? "lotus-one" : "lotus-three");
+          };
+          imgEl.src = getAssetUrl(info.slot);
+        }
+
+        const panel = document.getElementById("end-panel-" + i);
+        if (panel) {
+          panel.onclick = () => {
+            if (state.endLotusIndex !== i) {
+              state.endLotusIndex = i;
+              updateEndCylinderView();
+            }
+          };
+        }
+
+        const tab = document.getElementById("end-tab-" + i);
+        if (tab) {
+          tab.onclick = () => {
+            state.endLotusIndex = i;
+            updateEndCylinderView();
+          };
+        }
+      }
+
+      const prevBtn = document.getElementById("end-btn-prev");
+      if (prevBtn) {
+        prevBtn.onclick = () => {
+          state.endLotusIndex = (state.endLotusIndex + 2) % 3;
+          updateEndCylinderView();
+        };
+      }
+      const nextBtn = document.getElementById("end-btn-next");
+      if (nextBtn) {
+        nextBtn.onclick = () => {
+          state.endLotusIndex = (state.endLotusIndex + 1) % 3;
+          updateEndCylinderView();
+        };
+      }
+
+      updateEndCylinderView();
     }
 
     /* ==========================================================================
-       各章实现：【终章 end · 收尾】
-       白光全屏扩散 -> 黑色大字「终」 -> 三生莲组合图 -> 鸣谢
+       各章实现：【终章 end · 三生莲介绍视频与三相独立展墙】
+       拼图曝光后播放三生莲介绍视频 -> 视频结束/跳过 -> 黑色大字「终」 -> 三相独立展墙（人像、莲像、神鸟像）
        ========================================================================== */
     function mountEndChapter() {
+      const video = document.getElementById("lotus-video-player");
+      const fallbackCanvas = document.getElementById("lotus-fallback-canvas");
+      const playBtn = document.getElementById("lotus-btn-play");
+      const muteBtn = document.getElementById("lotus-btn-mute");
+      const progressFill = document.getElementById("lotus-progress-fill");
+      const timecodeTip = document.getElementById("lotus-timecode-tip");
+      const progressContainer = document.getElementById("lotus-progress-container");
+      const skipBtn = document.getElementById("btn-skip-lotus-video");
+      const videoWrap = document.getElementById("lotus-video-wrap");
+
+      const playIcon = document.getElementById("lotus-icon-play");
+      const pauseIcon = document.getElementById("lotus-icon-pause");
+      const volOnIcon = document.getElementById("lotus-icon-vol-on");
+      const volMutedIcon = document.getElementById("lotus-icon-vol-muted");
+
       const whiteFlash = document.getElementById("end-white-flash");
       const charZhong = document.getElementById("end-char-zhong");
       const ipWrap = document.getElementById("end-ip-wrap");
-      const groupImg = document.getElementById("end-group-img");
-      const ackBtn = document.getElementById("btn-show-ack");
 
-      groupImg.src = getAssetUrl("lotusGroup");
+      initEndGallery();
 
-      // 阶段 1: 白光从中心铺满全屏 (2s)
-      whiteFlash.style.opacity = "1";
-      setTimeout(() => {
-        whiteFlash.style.opacity = "0";
-      }, 1800);
+      // 初始重置状态
+      whiteFlash.style.opacity = "0";
+      charZhong.style.opacity = "0";
+      ipWrap.style.opacity = "0";
+      progressFill.style.width = "0%";
+      fallbackCanvas.style.display = "none";
+      video.style.display = "block";
+      videoWrap.style.display = "flex";
 
-      // 阶段 2: 浮现黑色大字「终」 (停留 2s)
-      setTimeout(() => {
-        charZhong.style.opacity = "1";
-      }, 1000);
+      const videoSrc = ASSETS.lotusIntroVideo;
+      let usingFallback = false;
+      let finished = false;
 
-      setTimeout(() => {
-        charZhong.style.opacity = "0";
-      }, 3400);
-
-      // 阶段 3: 三生莲组合图定格与下方字幕
-      setTimeout(() => {
-        ipWrap.style.opacity = "1";
-      }, 4200);
-
-      // 鸣谢按钮
-      ackBtn.onclick = () => {
-        const ackSrc = ASSETS.ackVideo;
-        if (!ackSrc) {
-          showToast("未导入鸣谢视频（可于右下角素材面板导入）");
-          return;
+      function finishVideo() {
+        if (finished) return;
+        finished = true;
+        if (video) {
+          video.pause();
+          video.onended = null;
+          video.onerror = null;
+          video.ontimeupdate = null;
+          video.oncanplay = null;
         }
-        const modal = document.getElementById("ack-video-modal");
-        const player = document.getElementById("ack-video-player");
-        player.src = ackSrc;
-        modal.classList.add("active");
-        player.play().catch(() => {});
-        player.onended = () => {
-          modal.classList.remove("active");
+        if (state.rafId) {
+          cancelAnimationFrame(state.rafId);
+          state.rafId = null;
+        }
+        // 视频结束或跳过后：收起视频层，展现三生莲三相分立展墙（无鸣谢）
+        videoWrap.style.display = "none";
+        revealFinalIP();
+      }
+
+      function revealFinalIP() {
+        // 白光铺展 (1.5s)
+        whiteFlash.style.opacity = "1";
+        setTimeout(() => {
+          whiteFlash.style.opacity = "0";
+        }, 1500);
+
+        // 浮现黑色大字「终」 (停留 2s)
+        setTimeout(() => {
+          charZhong.style.opacity = "1";
+        }, 800);
+
+        setTimeout(() => {
+          charZhong.style.opacity = "0";
+        }, 2600);
+
+        // 三生莲三相分立展墙定格展现（对标支线展墙）
+        setTimeout(() => {
+          ipWrap.style.opacity = "1";
+          initEndGallery();
+        }, 3000);
+      }
+
+      // 降级动画（未上传视频时，提供流畅的程序化三生莲介绍演绎，支持随时跳过）
+      let fallbackStartTime = 0;
+      const fallbackDuration = 6000;
+
+      function runFallback() {
+        if (usingFallback) return;
+        usingFallback = true;
+        video.style.display = "none";
+        fallbackCanvas.style.display = "block";
+        const ctx = fallbackCanvas.getContext("2d");
+        const w = fallbackCanvas.width = window.innerWidth;
+        const h = fallbackCanvas.height = window.innerHeight;
+        fallbackStartTime = performance.now();
+
+        function renderFallbackLoop(now) {
+          if (state.chapter !== "end") return;
+          const elapsed = now - fallbackStartTime;
+          const progress = Math.min(elapsed / fallbackDuration, 1);
+          progressFill.style.width = (progress * 100) + "%";
+
+          const curSec = Math.floor(elapsed / 1000);
+          const totalSec = Math.floor(fallbackDuration / 1000);
+          timecodeTip.textContent = `${formatTime(curSec)} / ${formatTime(totalSec)}`;
+
+          ctx.fillStyle = "#0C0A09";
+          ctx.fillRect(0, 0, w, h);
+
+          // 三生莲灵气汇聚光晕
+          const grad = ctx.createRadialGradient(w / 2, h / 2, 20, w / 2, h / 2, Math.max(w, h) * 0.55);
+          grad.addColorStop(0, "rgba(245, 229, 201, " + (0.35 * (1 - progress * 0.3)) + ")");
+          grad.addColorStop(0.45, "rgba(214, 178, 110, 0.18)");
+          grad.addColorStop(1, "rgba(12, 10, 9, 0.95)");
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, w, h);
+
+          ctx.save();
+          ctx.font = "bold 38px serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillStyle = "#F5E5C9";
+          ctx.fillText("三 生 莲 · 概 念 演 绎", w / 2, h / 2 - 28);
+          ctx.font = "14px sans-serif";
+          ctx.fillStyle = "rgba(214, 178, 110, 0.85)";
+          ctx.fillText("【三生莲介绍视频插槽 · 可在右下角素材抽屉导入 mp4/webm，或按 Esc 跳过】", w / 2, h / 2 + 24);
+          ctx.restore();
+
+          if (progress >= 1) {
+            finishVideo();
+            return;
+          }
+          state.rafId = requestAnimationFrame(renderFallbackLoop);
+        }
+        state.rafId = requestAnimationFrame(renderFallbackLoop);
+      }
+
+      // 如果已导入/配置视频
+      if (videoSrc && typeof videoSrc === "string" && videoSrc.trim() !== "") {
+        video.src = videoSrc;
+        video.muted = !state.soundOn;
+        if (volOnIcon && volMutedIcon) {
+          volOnIcon.style.display = state.soundOn ? "block" : "none";
+          volMutedIcon.style.display = state.soundOn ? "none" : "block";
+        }
+        let canPlayTimeout = setTimeout(() => {
+          runFallback();
+        }, 3500);
+
+        video.oncanplay = () => {
+          clearTimeout(canPlayTimeout);
+          video.play().catch(() => runFallback());
         };
+        video.onerror = () => {
+          clearTimeout(canPlayTimeout);
+          runFallback();
+        };
+        video.onended = () => {
+          finishVideo();
+        };
+        video.ontimeupdate = () => {
+          if (!video.duration) return;
+          const p = (video.currentTime / video.duration) * 100;
+          progressFill.style.width = p + "%";
+          timecodeTip.textContent = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
+        };
+      } else {
+        runFallback();
+      }
+
+      // 播放/暂停
+      playBtn.onclick = () => {
+        if (usingFallback) {
+          if (state.rafId) {
+            cancelAnimationFrame(state.rafId);
+            state.rafId = null;
+            playIcon.style.display = "block";
+            pauseIcon.style.display = "none";
+          } else {
+            fallbackStartTime = performance.now() - (parseFloat(progressFill.style.width) / 100) * fallbackDuration;
+            playIcon.style.display = "none";
+            pauseIcon.style.display = "block";
+            runFallback();
+          }
+        } else {
+          if (video.paused) {
+            video.play();
+            playIcon.style.display = "none";
+            pauseIcon.style.display = "block";
+          } else {
+            video.pause();
+            playIcon.style.display = "block";
+            pauseIcon.style.display = "none";
+          }
+        }
       };
 
-      document.getElementById("btn-close-ack").onclick = () => {
-        const modal = document.getElementById("ack-video-modal");
-        const player = document.getElementById("ack-video-player");
-        player.pause();
-        modal.classList.remove("active");
+      // 监听播放状态切换图标
+      video.onplay = () => {
+        playIcon.style.display = "none";
+        pauseIcon.style.display = "block";
+      };
+      video.onpause = () => {
+        playIcon.style.display = "block";
+        pauseIcon.style.display = "none";
+      };
+
+      // 静音切换
+      muteBtn.onclick = () => {
+        video.muted = !video.muted;
+        volOnIcon.style.display = video.muted ? "none" : "block";
+        volMutedIcon.style.display = video.muted ? "block" : "none";
+        showToast(video.muted ? "静音" : "原声");
+      };
+
+      // 进度条拖拽与跳转
+      progressContainer.onclick = (e) => {
+        const rect = progressContainer.getBoundingClientRect();
+        const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        if (usingFallback) {
+          fallbackStartTime = performance.now() - ratio * fallbackDuration;
+        } else if (video.duration) {
+          video.currentTime = ratio * video.duration;
+        }
+      };
+
+      // 跳过按钮
+      skipBtn.onclick = () => {
+        finishVideo();
       };
     }
 
@@ -4873,8 +5541,14 @@
           if (pBase) pBase.src = getAssetUrl("branches.xuxiu.walls.0");
           break;
         case "end":
-          const endImg = document.getElementById("end-group-img");
-          if (endImg) endImg.src = getAssetUrl("lotusGroup");
+          for (let i = 0; i < 3; i++) {
+            const imgEl = document.getElementById("end-img-" + i);
+            const info = LOTUS_IP_DESCRIPTIONS[i];
+            if (imgEl && info) {
+              imgEl.src = getAssetUrl(info.slot);
+            }
+          }
+          updateEndCylinderView();
           break;
       }
     }
@@ -4982,6 +5656,7 @@
             state.activeDragHotspotId = null;
             tip.style.display = "none";
             saveCurrentState();
+            syncHotspotsToServer(CONFIG.hotspots, false);
           }
 
           window.addEventListener("pointermove", onPointerMove);
@@ -5031,6 +5706,15 @@
         toggleHotspotEditor();
       };
 
+      // 固化热点坐标为源码初始默认配置按钮
+      const btnSaveCoords = document.getElementById("btn-save-default-coords");
+      if (btnSaveCoords) {
+        btnSaveCoords.onclick = (e) => {
+          e.stopPropagation();
+          syncHotspotsToServer(CONFIG.hotspots, true);
+        };
+      }
+
       // 重置按钮
       document.getElementById("btn-reset-game").onclick = () => {
         resetSaveData();
@@ -5063,8 +5747,10 @@
             document.getElementById("assets-drawer").classList.remove("active");
             return;
           }
-          if (document.getElementById("ack-video-modal").classList.contains("active")) {
-            document.getElementById("ack-video-modal").classList.remove("active");
+          const lotusVidWrap = document.getElementById("lotus-video-wrap");
+          if (lotusVidWrap && lotusVidWrap.style.display === "flex") {
+            const skipBtn = document.getElementById("btn-skip-lotus-video");
+            if (skipBtn) skipBtn.click();
             return;
           }
           const retVidWrap = document.getElementById("return-video-wrap");
@@ -5086,11 +5772,38 @@
             document.getElementById("film-btn-play").click();
           } else if (state.chapter === "return") {
             const retVidWrap = document.getElementById("return-video-wrap");
-            const retVidPlayer = document.getElementById("return-video-player");
-            if (retVidWrap && retVidWrap.style.display === "flex" && retVidPlayer) {
+            if (retVidWrap && retVidWrap.style.display === "flex") {
               e.preventDefault();
-              if (retVidPlayer.paused) retVidPlayer.play(); else retVidPlayer.pause();
+              const playBtn = document.getElementById("return-btn-play");
+              if (playBtn) playBtn.click();
             }
+          } else if (state.chapter === "end") {
+            const lotusVidWrap = document.getElementById("lotus-video-wrap");
+            if (lotusVidWrap && lotusVidWrap.style.display === "flex") {
+              e.preventDefault();
+              const playBtn = document.getElementById("lotus-btn-play");
+              if (playBtn) playBtn.click();
+            }
+          }
+        }
+
+        // 方向键左右切换壁画或三生相
+        if (e.key === "ArrowLeft") {
+          if (state.chapter === "branch") {
+            const btn = document.getElementById("btn-prev-wall");
+            if (btn) btn.click();
+          } else if (state.chapter === "end") {
+            const btn = document.getElementById("end-btn-prev");
+            if (btn) btn.click();
+          }
+        }
+        if (e.key === "ArrowRight") {
+          if (state.chapter === "branch") {
+            const btn = document.getElementById("btn-next-wall");
+            if (btn) btn.click();
+          } else if (state.chapter === "end") {
+            const btn = document.getElementById("end-btn-next");
+            if (btn) btn.click();
           }
         }
       });
