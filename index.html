@@ -586,7 +586,7 @@
       height: 110%;
       object-fit: cover;
       animation: introBgDrift 24s ease-in-out infinite alternate;
-      filter: brightness(0.65) contrast(1.1);
+      filter: brightness(0.75) contrast(1.08);
     }
     @keyframes introBgDrift {
       0% { transform: scale(1) translate(0, 0); }
@@ -2118,7 +2118,7 @@
 
     <!-- 序章 intro -->
     <section class="chapter-layer active" id="layer-intro">
-      <img class="intro-bg-img" id="intro-bg-image" alt="北齐壁画博物馆" />
+      <img class="intro-bg-img" id="intro-bg-image" src="/assets/aistudio/___3b06c6d7.jpg" alt="北齐壁画博物馆" />
       <canvas id="intro-ripple-canvas"></canvas>
       <div class="intro-center-content">
         <div class="intro-light-slit"></div>
@@ -2645,7 +2645,7 @@
        一、槽位定义与配置系统
        ========================================================================== */
     const ASSETS = {
-      introImage: "",          // 引入页底图（图片）
+      introImage: "/assets/aistudio/___3b06c6d7.jpg", // 引入页底图（图片）
       filmVideo: "",           // 第一章影片（视频，可空）
       branches: {
         xuxiu:   { 
@@ -2674,7 +2674,7 @@
           ] 
         }
       },
-      lotus: { one: "", two: "", three: "" },   // 莲相 / 人相 / 鸟相
+      lotus: { one: "/assets/aistudio/dcbd134f1810eec76f0b8d84bc413fad_db7addac.jpg", two: "", three: "" },   // 莲相 / 人相 / 鸟相
       lotusGroup: "",          // 三生莲组合图
       returnVideo: "",         // 第五章震动后转场视频（可空）
       ackVideo: ""             // 鸣谢视频（可空）
@@ -2682,6 +2682,8 @@
 
     // 已导入的文件元信息（用于抽屉回显）
     const ASSETS_META = {
+      "introImage": { name: "一念生莲·序章底图 (___3b06c6d7.jpg)", size: "456 KB" },
+      "lotus.one": { name: "莲相·因 (dcbd134f1810eec76f0b8d84bc413fad_db7addac.jpg)", size: "1.68 MB" },
       "branches.xuxiu.walls.0": { name: "xu-1.jpg", size: "2.14 MB" },
       "branches.xuxiu.walls.1": { name: "xu-3.jpg", size: "670 KB" },
       "branches.xuxiu.walls.2": { name: "xu-2.jpg", size: "415 KB" },
@@ -3087,7 +3089,7 @@
       // 返回对应兜底
       switch (slotPath) {
         case "introImage":
-          return generateFrescoFallback("北齐壁画博物馆 · 序厅", "太原并州古墓群千秋绝壁", "intro");
+          return "/assets/aistudio/___3b06c6d7.jpg";
         case "branches.xuxiu.walls.0":
           return generateFrescoFallback("徐显秀墓 · 夫妇宴饮图", "北齐太尉武安王宴坐极乐", "xuxiu-0");
         case "branches.xuxiu.walls.1":
@@ -3109,7 +3111,7 @@
         case "branches.lourui.walls.2":
           return generateFrescoFallback("娄睿墓 · 七人宾客图", "主室壁画 · 七人宾客相聚叙谈", "lourui-2");
         case "lotus.one":
-          return generateFrescoFallback("三生莲 · 莲相（因）", "千瓣宝莲 · 佛光化育", "lotus-one");
+          return "/assets/aistudio/dcbd134f1810eec76f0b8d84bc413fad_db7addac.jpg";
         case "lotus.two":
           return generateFrescoFallback("三生莲 · 人相（果）", "飞天神女 · 慈悲升仙", "lotus-two");
         case "lotus.three":
