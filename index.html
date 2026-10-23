@@ -1713,6 +1713,12 @@
       transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
       text-shadow: 0 2px 14px rgba(0,0,0,0.9), 0 0 10px rgba(214, 178, 110, 0.35);
     }
+    .converge-monologue-long {
+      width: min(90vw, 1100px);
+      font-size: clamp(1rem, 1.8vw, 1.5rem);
+      letter-spacing: 0.1em;
+      line-height: 1.7;
+    }
     .converge-speed-tip {
       position: absolute;
       bottom: 30px;
@@ -2528,6 +2534,8 @@
         <div class="converge-monologue-line" id="mono-line-1">在北齐时代，莲花代表着“出淤泥而不染”的净土和重生；</div>
         <div class="converge-monologue-line" id="mono-line-2">祂被视为逝者的精神寄托，</div>
         <div class="converge-monologue-line" id="mono-line-3">象征着希望借助佛教的力量超度亡魂，通往极乐世界。</div>
+        <div class="converge-monologue-line converge-monologue-long" id="mono-line-4">及至仙云引路，徐显秀夫妇乘云而上，金莲亦化形随仙驾凌霄而去，伴其越过云海，自此脱离尘世，直赴青冥。</div>
+        <div class="converge-monologue-line " id="mono-line-5">直到……</div>
       </div>
       <div class="converge-speed-tip">点击任意处可加速播放 (2x)</div>
     </section>
@@ -4477,12 +4485,14 @@
       const mono1 = document.getElementById("mono-line-1");
       const mono2 = document.getElementById("mono-line-2");
       const mono3 = document.getElementById("mono-line-3");
+      const mono4 = document.getElementById("mono-line-4");
+      const mono5 = document.getElementById("mono-line-5");
 
       let w = canvas.width = window.innerWidth;
       let h = canvas.height = window.innerHeight;
 
       // 重置文字状态
-      [mono1, mono2, mono3].forEach(el => {
+      [mono1, mono2, mono3,mono4,mono5].forEach(el => {
         el.style.opacity = "0";
         el.style.transform = "translateY(12px)";
       });
@@ -4577,24 +4587,32 @@
           phaseImg.style.transform = `translateY(-${p * 80}px) scale(${1 - p * 0.15})`;
         }
         // 阶段 4: 报幕独白纯黑底三行 (12 - 20s)
-        else if (sec >= 12 && sec < 20) {
+        else if (sec >= 12 && sec < 25) {
           phaseImg.style.display = "none";
           const subSec = sec - 12;
           // 第一句 (0s 浮现)
-          mono1.style.opacity = (subSec >= 0 && subSec < 8.0) ? "1" : "0";
-          mono1.style.transform = (subSec >= 0 && subSec < 8.0) ? "translateY(0)" : "translateY(12px)";
+          mono1.style.opacity = (subSec >= 0 && subSec < 13.0) ? "1" : "0";
+          mono1.style.transform = (subSec >= 0 && subSec < 13.0) ? "translateY(0)" : "translateY(12px)";
           // 第二句 (2.5s 浮现)
-          mono2.style.opacity = (subSec >= 2.5 && subSec < 8.0) ? "1" : "0";
-          mono2.style.transform = (subSec >= 2.5 && subSec < 8.0) ? "translateY(0)" : "translateY(12px)";
+          mono2.style.opacity = (subSec >= 2.5 && subSec < 13.0) ? "1" : "0";
+          mono2.style.transform = (subSec >= 2.5 && subSec < 13.0) ? "translateY(0)" : "translateY(12px)";
           // 第三句 (5.0s 浮现)
-          mono3.style.opacity = (subSec >= 5.0 && subSec < 8.0) ? "1" : "0";
-          mono3.style.transform = (subSec >= 5.0 && subSec < 8.0) ? "translateY(0)" : "translateY(12px)";
+          mono3.style.opacity = (subSec >= 5.0 && subSec < 13.0) ? "1" : "0";
+          mono3.style.transform = (subSec >= 5.0 && subSec < 13.0) ? "translateY(0)" : "translateY(12px)";
+          // 第四句（7.5 秒浮现）
+          mono4.style.opacity = (subSec >= 7.5 && subSec < 13.0) ? "1" : "0";
+          mono4.style.transform = (subSec >= 7.5 && subSec < 13.0) ? "translateY(0)" : "translateY(12px)";
+          // 第五句（10 秒浮现）
+          mono5.style.opacity = (subSec >= 10.0 && subSec < 13.0) ? "1" : "0";
+          mono5.style.transform = (subSec >= 10.0 && subSec < 13.0) ? "translateY(0)" : "translateY(12px)";
         }
         // 阶段 5: 人相出现升起并停留 (20 - 25s, 存在时间延长至 5 秒)
-        else if (sec >= 20 && sec < 25) {
+        else if (sec >= 25 && sec < 30) {
           mono1.style.opacity = "0";
           mono2.style.opacity = "0";
           mono3.style.opacity = "0";
+          mono4.style.opacity = "0";
+          mono5.style.opacity = "0";
           const p = (sec - 20) / 5;
           phaseImg.style.display = "block";
           phaseImg.src = getAssetUrl("lotus.two");
